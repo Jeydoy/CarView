@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+       html{
+scroll-behavior: smooth;
+       }
+    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CarView</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CarView.styles.css" asp-append-version="true" />
+</head>
+<body class="text-white">
+    <header>
+       <nav class="navbar navbar-dark bg-dark border-bottom border-info sticky-top">
+    <div class="container-fluid">
+        <!-- Кнопка-гамбургер -->
+        <button class="btn btn-dark border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Логотип по центру -->
+        <a class="navbar-brand mx-auto text-info fw-bold fs-4" asp-controller="Home" asp-action="Index">CarView</a>
+        
+        <!-- Кнопка "Улюблені (Лайкані)" зверху справа -->
+        <a asp-controller="Cars" asp-action="Favorites" class="btn btn-dark border-0 fs-5 text-danger" style="width: 56px;" title="Лайкані авто">
+            ❤️
+        </a>
+    </div>
+</nav>
+
+<!-- Бокова панель (Offcanvas) -->
+<div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+    <div class="offcanvas-header border-bottom border-secondary">
+        <h5 class="offcanvas-title text-info fw-bold" id="offcanvasMenuLabel">Меню CarView</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 mt-2">
+            <li class="nav-item mb-2">
+                <a class="nav-link fs-5" asp-controller="Home" asp-action="Index">🏠 Головна сторінка</a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link fs-5" asp-controller="Cars" asp-action="Index">🚗 Каталог авто</a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link fs-5 text-info" asp-controller="Brands" asp-action="Index">🏢 Авто компанії</a>
+            </li>
+            
+            <!-- Нова вкладка Лайканих авто (з відступом) -->
+            <li class="nav-item mt-4 pt-3 border-top border-secondary">
+                <a class="nav-link fs-5 text-danger fw-bold" asp-controller="Cars" asp-action="Favorites">❤️ Лайкані авто</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Сама бокова панель (Offcanvas), яка виїжджає зліва -->
+<div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+    <div class="offcanvas-header border-bottom border-secondary">
+        <h5 class="offcanvas-title text-info fw-bold" id="offcanvasMenuLabel">Меню CarView</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 mt-2">
+            <li class="nav-item mb-2">
+                <a class="nav-link fs-5" asp-controller="Home" asp-action="Index">🏠 Головна сторінка</a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link fs-5" asp-controller="Cars" asp-action="Index">🚗 Каталог авто</a>
+            </li>
+            <li class="nav-item mb-2">
+                <!-- Ось наше нове посилання на каталог компаній -->
+                <a class="nav-link fs-5 text-info" asp-controller="Brands" asp-action="Index">🏢 Авто компанії</a>
+            </li>
+        </ul>
+    </div>
+</div>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - CarView - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,116 @@
+﻿@model IEnumerable<CarView.Models.Car>
+
+@{
+    ViewData["Title"] = "Улюблені автомобілі";
+}
+
+<div class="container-xl mt-4 mb-5 text-white">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            
+            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-danger pb-2">
+                <h2 class="text-danger m-0">❤️ Улюблені автомобілі <span class="text-secondary fs-5">(@Model.Count())</span></h2>
+                <a asp-action="Index" class="btn btn-outline-secondary">Повернутись до каталогу</a>
+            </div>
+
+            @if (!Model.Any())
+            {
+                <div class="alert bg-dark border-secondary text-center text-white py-5 shadow-lg mt-4">
+                    <h1 class="display-1 mb-3">🤍</h1>
+                    <h3 class="text-secondary mb-4">Тут поки що порожньо</h3>
+                    <p class="text-secondary">Ви ще не додали жодного автомобіля до улюблених.</p>
+                    <a asp-action="Index" class="btn btn-info mt-3 px-5 fw-bold text-dark">Перейти до каталогу</a>
+                </div>
+            }
+
+            @foreach (var car in Model)
+            {
+                <div class="card bg-dark border-secondary mb-4 shadow-sm position-relative" style="transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 15px rgba(0,0,0,0.5)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                    
+                    <!-- КНОПКА ЛАЙКУ (Опущена нижче, щоб не закривати ціну) -->
+                    @{
+                        var likedCars = ViewBag.LikedCars as List<string> ?? new List<string>();
+                        bool isLiked = likedCars.Contains(car.Id.ToString());
+                    }
+                    <form asp-action="ToggleLike" asp-route-id="@car.Id" method="post" class="position-absolute" style="top: 75px; right: 20px; z-index: 10;">
+                        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                        <button type="submit" class="btn btn-dark rounded-circle shadow-lg border border-secondary p-2 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: rgba(33,37,41,0.85);" title="Видалити з улюблених">
+                            <span class="fs-4" style="line-height: 1;">@(isLiked ? "❤️" : "🤍")</span>
+                        </button>
+                    </form>
+
+                    <!-- Тіло картки (клікабельне) -->
+                    <a asp-action="Details" asp-route-id="@car.Id" class="text-decoration-none text-white d-block">
+                        <div class="row g-0">
+                            
+                            <!-- ФОТО -->
+                            <div class="col-md-4 col-sm-5">
+                                @{
+                                    var mainPhoto = car.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl 
+                                                 ?? car.MediaFiles?.FirstOrDefault()?.FileUrl;
+                                }
+                                @if (!string.IsNullOrEmpty(mainPhoto))
+                                {
+                                    <img src="@mainPhoto.Replace("\"", "").Trim()" class="img-fluid rounded-start" alt="@car.ModelName" style="object-fit: cover; height: 240px; width: 100%;">
+                                }
+                                else
+                                {
+                                    <div class="d-flex align-items-center justify-content-center bg-secondary rounded-start" style="height: 240px; width: 100%;">
+                                        <span class="text-dark fw-bold">Немає фото</span>
+                                    </div>
+                                }
+                            </div>
+                            
+                            <!-- ДЕТАЛІ -->
+                            <div class="col-md-8 col-sm-7">
+                                <div class="card-body d-flex flex-column h-100 p-4">
+                                    
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <h3 class="card-title text-info fw-bold mb-1">
+                                                @(car.Brand != null ? car.Brand.Name : "") @car.ModelName
+                                            </h3>
+                                            <p class="text-secondary mb-0">Рік випуску: @car.Year</p>
+                                        </div>
+                                        <h3 class="text-success fw-bold m-0 text-end" style="white-space: nowrap;">
+                                            $@car.Price.ToString("N0")
+                                        </h3>
+                                    </div>
+
+                                    <!-- Значки з характеристиками -->
+                                    <div class="row mt-auto g-2">
+                                        <div class="col-6 col-md-3">
+                                            <div class="p-2 border border-secondary rounded text-center shadow-sm" style="background-color: rgba(255,255,255,0.05);">
+                                                <div class="text-secondary mb-1" style="font-size: 0.8rem;">⚙️ Двигун</div>
+                                                <div class="fw-bold fs-6 text-white">@(string.IsNullOrEmpty(car.EngineCapacity) ? "-" : car.EngineCapacity)</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <div class="p-2 border border-secondary rounded text-center shadow-sm" style="background-color: rgba(255,255,255,0.05);">
+                                                <div class="text-secondary mb-1" style="font-size: 0.8rem;">🐎 Потужність</div>
+                                                <div class="fw-bold fs-6 text-white">@(car.HorsePower > 0 ? $"{car.HorsePower} к.с." : "-")</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <div class="p-2 border border-secondary rounded text-center shadow-sm" style="background-color: rgba(255,255,255,0.05);">
+                                                <div class="text-secondary mb-1" style="font-size: 0.8rem;">🕹️ КПП</div>
+                                                <div class="fw-bold fs-6 text-white" style="font-size: 0.9rem;">@car.Transmission</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <div class="p-2 border border-secondary rounded text-center shadow-sm" style="background-color: rgba(255,255,255,0.05);">
+                                                <div class="text-secondary mb-1" style="font-size: 0.8rem;">⛽ Паливо</div>
+                                                <div class="fw-bold fs-6 text-white" style="font-size: 0.9rem;">@car.FuelType</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

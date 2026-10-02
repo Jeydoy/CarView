@@ -1,0 +1,286 @@
+@model CarView.Models.Car
+
+@{
+    ViewData["Title"] = $"{Model.Brand?.Name} {Model.ModelName} — Огляд";
+
+    // Шукаємо головне фото для великого банера
+    var mainPoster = Model.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl
+                     ?? Model.MediaFiles?.FirstOrDefault()?.FileUrl
+                     ?? "/images/placeholder.jpg";
+}
+
+<!-- Hero Section (Головний постер від краю до краю) -->
+<div class="position-relative overflow-hidden mb-5 shadow-lg"
+     style="background-image: url('@mainPoster'); background-size: cover; background-position: center; height: 55vh; width: 100vw; margin-left: calc(-50vw + 50%);">
+
+    <!-- Затемнення фону для кращого читання тексту -->
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(0,0,0,0.6);"></div>
+
+    <!-- Текст поверх постера (тільки назва) -->
+    <div class="position-absolute top-50 start-50 translate-middle z-2 w-100 text-center">
+        <h1 class="display-3 fw-bold text-info text-opacity-75">@Model.Brand?.Name @Model.ModelName</h1>
+    </div>
+</div>
+
+<div class="container-xl mt-4 text-white mb-5">
+    <div class="row g-4">
+        
+      
+        <!-- ==================== ЛІВА КОЛОНКА (Навігація + Графіки) ==================== -->
+        <div class="col-lg-3 d-none d-lg-block">
+            <!-- sticky-top тримає меню та графіки на екрані при скролі -->
+            <div class="sticky-top" style="top: 100px;">
+
+                <h6 class="text-secondary mb-3 text-uppercase fw-bold" style="letter-spacing: 1px;">Меню</h6>
+                <nav class="nav flex-column nav-pills gap-2 mb-4">
+                    <a class="nav-link text-light px-3 py-2 border border-secondary" href="#specs" style="background-color: rgba(255,255,255,0.02);">Характеристики</a>
+                    <a class="nav-link text-light px-3 py-2 border border-secondary" href="#overview" style="background-color: rgba(255,255,255,0.02);">Огляд авто</a>
+                    <a class="nav-link text-light px-3 py-2 border border-secondary" href="#gallery" style="background-color: rgba(255,255,255,0.02);">Галерея</a>
+                </nav>
+
+                <!-- Графіки статистики під меню -->
+                <h6 class="text-secondary mb-3 text-uppercase fw-bold" style="letter-spacing: 1px;">Статистика</h6>
+
+                <!-- Лінійний графік -->
+                <div class="card bg-dark border-secondary mb-3 shadow-sm" style="background-color: rgba(255,255,255,0.02) !important;">
+                    <div class="card-body p-2">
+                        <h6 class="text-center text-info small mb-2">Перегляди</h6>
+                        <canvas id="viewsChart" height="150"></canvas>
+                    </div>
+                </div>
+
+                <!-- Кільцевий графік -->
+                <div class="card bg-dark border-secondary shadow-sm" style="background-color: rgba(255,255,255,0.02) !important;">
+                    <div class="card-body p-2">
+                        <h6 class="text-center text-info small mb-2">Конверсія дій</h6>
+                        <canvas id="likesChart" height="150"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==================== ЦЕНТРАЛЬНА КОЛОНКА (Контент) ==================== -->
+        <div class="col-lg-6">
+            
+            <!-- Секція Характеристик -->
+            <!-- scroll-margin-top: 100px потрібен, щоб при кліку на навігацію, секція не ховалася під верхньою чорною шапкою сайту -->
+            <section id="specs" class="mb-5" style="scroll-margin-top: 100px;">
+                <h2 class="mb-4 text-info border-bottom border-info pb-2">Характеристики</h2>
+                <div class="row g-3 text-center">
+                    <div class="col-md-4 col-6">
+                        <div class="p-3 border border-secondary bg-dark rounded h-100 shadow-sm">
+                            <h6 class="text-secondary mb-1 small">⚙️ Двигун</h6>
+                            <strong class="fs-6">@(string.IsNullOrEmpty(Model.EngineCapacity) ? "-" : Model.EngineCapacity)</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-6">
+                        <div class="p-3 border border-secondary bg-dark rounded h-100 shadow-sm">
+                            <h6 class="text-secondary mb-1 small">🐎 Потужність</h6>
+                            <strong class="fs-6">@(Model.HorsePower > 0 ? $"{Model.HorsePower} к.с." : "-")</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-6">
+                        <div class="p-3 border border-secondary bg-dark rounded h-100 shadow-sm">
+                            <h6 class="text-secondary mb-1 small">🛞 Привід</h6>
+                            <strong class="fs-6">@(string.IsNullOrEmpty(Model.Drivetrain) ? "-" : Model.Drivetrain)</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-6">
+                        <div class="p-3 border border-secondary bg-dark rounded h-100 shadow-sm">
+                            <h6 class="text-secondary mb-1 small">🚗 Кузов</h6>
+                            <strong class="fs-6">@Model.BodyType</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-6">
+                        <div class="p-3 border border-secondary bg-dark rounded h-100 shadow-sm">
+                            <h6 class="text-secondary mb-1 small">🕹️ Коробка</h6>
+                            <strong class="fs-6">@Model.Transmission</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-6">
+                        <div class="p-3 border border-secondary bg-dark rounded h-100 shadow-sm">
+                            <h6 class="text-secondary mb-1 small">⛽ Пальне</h6>
+                            <strong class="fs-6">@Model.FuelType</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Секція Огляду -->
+            <section id="overview" class="mb-6" style="scroll-margin-top: 100px;">
+                <h2 class="mb-3 text-info border-bottom border-info pb-2">Огляд моделі</h2>
+                <div class="p-4 border border-secondary rounded" style="background-color: rgba(255,255,255,0.02);">
+                    <p class="lead fs-5 m-0 text-light text-opacity-75" style="line-height: 1.8;">
+                        @(string.IsNullOrEmpty(Model.Description) ? "Детальний опис для цього автомобіля ще не додано." : Model.Description)
+                    </p>
+                </div>
+            </section>
+
+            <!-- Секція Галереї -->
+            <section id="gallery" class="mb-5" style="scroll-margin-top: 100px;">
+                <h2 class="mb-4 text-info border-bottom border-info pb-2">Галерея</h2>
+                <div class="row g-3">
+                    @if (Model.MediaFiles != null && Model.MediaFiles.Any(m => !m.IsMain))
+                    {
+                        foreach (var media in Model.MediaFiles.Where(m => !m.IsMain))
+                        {
+                            <div class="col-md-6 col-sm-6">
+                                <!-- ratio-4x3 робить усі додаткові фото однакового формату -->
+                                <div class="ratio ratio-4x3">
+                                    <img src="@media.FileUrl" class="rounded shadow-sm border border-secondary" style="object-fit: cover;" alt="Фото @Model.ModelName" />
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-secondary">Додаткових фотографій поки немає.</p>
+                    }
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ==================== ПРАВА КОЛОНКА (Фіксована панель з ціною) ==================== -->
+        <div class="col-lg-3">
+            <div class="sticky-top" style="top: 100px;">
+                
+                <div class="card bg-dark border-info shadow-lg text-center mb-3">
+                    <div class="card-body p-4">
+                        <div class="mb-2">
+                            <span class="badge bg-secondary text-light mb-2 px-3 py-1 fs-6">Рік: @Model.Year</span>
+                        </div>
+                        <h2 class="text-info fw-bold mb-3">$@Model.Price.ToString("N0")</h2>
+                        
+                        <p class="text-secondary small mb-4">Перевірте актуальні ціни та пропозиції на найбільшому авторинку України.</p>
+                        
+                        <!-- Динамічна кнопка Auto.RIA -->
+                        @{
+                            var searchQuery = Uri.EscapeDataString($"site:auto.ria.com {Model.Brand?.Name} {Model.ModelName} {Model.Year}");
+                        }
+                        <a href="https://www.google.com/search?q=@searchQuery" 
+                           target="_blank" 
+                           class="btn w-100 mb-3 fw-bold text-white shadow-sm d-flex align-items-center justify-content-center gap-2" 
+                           style="background-color: #db5c4c; border: none; transition: opacity 0.2s;"
+                           onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                           <span class="fs-5">🔍</span> Знайти на Auto.RIA
+                        </a>
+
+                        <!-- КНОПКА ЛАЙКУ -->
+                        @{
+                            var likedCarsDetail = Context.Request.Cookies["LikedCars"]?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>();
+                            bool isLikedDetail = likedCarsDetail.Contains(Model.Id.ToString());
+                        }
+                        <form asp-controller="Cars" asp-action="ToggleLike" asp-route-id="@Model.Id" method="post" class="w-100 mb-2">
+                            <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                            <button type="submit" class="btn w-100 fw-bold @(isLikedDetail ? "btn-danger" : "btn-outline-danger")">
+                                @(isLikedDetail ? "❤️ В улюблених" : "🤍 Додати в улюблені") (@Model.LikesCount)
+                            </button>
+                        </form>
+
+                        <p class="text-secondary small mt-3 mb-0">Переглядів: @Model.ViewsCount 👁</p>
+                    </div>
+                </div>
+
+                <!-- Кнопка повернення -->
+                <a asp-action="Index" class="btn btn-outline-secondary w-100 mb-2">← Повернутися до каталогу</a>
+                
+                <!-- Кнопка адміністратора схована в самому низу панелі -->
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-warning w-100 shadow-sm" title="Режим адміністратора">
+                    ⚙️ Редагувати авто (Адмін)
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Отримуємо реальні дані з нашої моделі C#
+        const totalViews = @(Model.ViewsCount > 0 ? Model.ViewsCount : 10); // Захист від нулів
+        const totalLikes = @Model.LikesCount;
+
+        // ---------------------------------------------------------
+        // 1. Графік переглядів за 7 днів (Лінійний / Line Chart)
+        // ---------------------------------------------------------
+        const viewsCtx = document.getElementById('viewsChart').getContext('2d');
+
+        // Генеруємо красивий фейковий тренд для демонстрації (щоб графік був живим)
+        let trendData = [];
+        let current = Math.max(1, Math.floor(totalViews / 10));
+        for(let i = 0; i < 7; i++) {
+            trendData.push(current);
+            current += Math.floor(Math.random() * (totalViews / 5) + 1);
+        }
+        // Останній день (сьогодні) - це завжди пік
+        trendData[6] = Math.max(...trendData) + 2;
+
+        const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
+
+        new Chart(viewsCtx, {
+            type: 'line',
+            data: {
+                labels: days,
+                datasets: [{
+                    label: 'Перегляди',
+                    data: trendData,
+                    borderColor: '#0dcaf0', // Колір Info (блакитний)
+                    backgroundColor: 'rgba(13, 202, 240, 0.2)',
+                    borderWidth: 2,
+                    tension: 0.4, // Робить лінії плавними та вигнутими
+                    fill: true,
+                    pointBackgroundColor: '#0dcaf0'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    x: { ticks: { color: '#adb5bd' }, grid: { display: false } },
+                    y: { ticks: { color: '#adb5bd', stepSize: Math.ceil(totalViews/5) }, grid: { color: '#495057' }, beginAtZero: true }
+                }
+            }
+        });
+
+        // ---------------------------------------------------------
+        // 2. Графік конверсії Лайки/Перегляди (Кільцевий / Doughnut)
+        // ---------------------------------------------------------
+        const likesCtx = document.getElementById('likesChart').getContext('2d');
+        const justViews = Math.max(0, totalViews - totalLikes);
+
+        new Chart(likesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Лайкнули (В улюблених)', 'Просто переглянули'],
+                datasets: [{
+                    data: [totalLikes, justViews],
+                    backgroundColor: [
+                        '#dc3545', // Червоний (Лайки)
+                        '#6c757d'  // Сірий (Просто перегляди)
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '75%', // Товщина кільця
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#adb5bd', padding: 15, font: { size: 11 } }
+                    }
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,82 @@
+﻿@model CarView.ViewModels.HomeViewModel
+
+@{
+    ViewData["Title"] = "Головна";
+}
+
+<!-- 1. Велике вікно з постером (Hero Section) -->
+@if (Model.HeroCar != null)
+{
+    <!-- 1. Велике вікно з ВІДЕО на фоні (Від краю до краю) -->
+    <div class="position-relative overflow-hidden mb-5"
+         style="height: 65vh; width: 100vw; margin-left: calc(-50vw + 50%);">
+
+        <!-- Фонове відео -->
+        <video autoplay loop muted playsinline class="position-absolute top-50 start-50 translate-middle w-100"
+               style="object-fit: cover; min-height: 100%; z-index: 0;">
+            <source src="~/videos/main-promo.mp4" type="video/mp4" />
+        </video>
+
+        <!-- Затемнення поверх відео (Зменшено до 0.3 для більшої світлості) -->
+        <div class="position-absolute top-0 start-0 w-100 h-100"
+             style="background-color: rgba(0, 0, 0, 0.3); z-index: 1;"></div>
+
+        <!-- Контент поверх відео -->
+        <div class="position-relative z-2 d-flex flex-column justify-content-center align-items-center h-100 text-center">
+            @if (Model.HeroCar != null)
+            {
+                <!-- text-opacity-75 робить букви напівпрозорими -->
+                <h1 class="mb-3 display-2 fw-bold text-info text-opacity-75">@Model.HeroCar.Brand.Name @Model.HeroCar.ModelName</h1>
+
+                <!-- text-opacity-50 робить цей текст ще прозорішим -->
+                <h4 class="mb-4 text-light text-opacity-50">Топ вибір цього тижня</h4>
+
+                <!-- opacity: 0.8 додає прозорості самій кнопці -->
+                <a asp-controller="Cars" asp-action="Details" asp-route-id="@Model.HeroCar.Id"
+                   class="btn btn-outline-info btn-lg px-5 py-3 fw-bold rounded-pill shadow" style="opacity: 0.8;">
+                    Дізнатися більше
+                </a>
+            }
+            else
+            {
+                <h1 class="mb-3 display-3 fw-bold text-info text-opacity-75">Каталог преміум авто</h1>
+                <p class="lead text-light text-opacity-50">Знайди свій ідеальний автомобіль</p>
+            }
+        </div>
+    </div>
+
+    <!-- Далі йде твій список авто... -->
+    <!-- Не забудь додати клас text-white або bg-dark до карток, щоб вони пасували до темної теми -->
+}
+
+<!-- 2. Горизонтальний список інших машин (Скрол справа-наліво) -->
+<div class="container-fluid px-0 mb-5">
+    <h3 class="mb-4 px-3">Інші авто</h3>
+    <!-- Класи d-flex flex-nowrap overflow-auto створюють горизонтальну стрічку -->
+    <div class="d-flex flex-nowrap overflow-auto pb-4 px-3 gap-4" style="scroll-snap-type: x mandatory;">
+        @foreach (var car in Model.SimpleCars)
+        {
+            var carImage = car.MediaFiles.FirstOrDefault(m => m.IsMain)?.FileUrl
+                           ?? car.MediaFiles.FirstOrDefault()?.FileUrl
+                           ?? "/images/placeholder.jpg";
+
+            <div class="card shadow-sm flex-shrink-0" style="width: 300px; scroll-snap-align: start; border-radius: 12px; overflow: hidden;">
+                <img src="@carImage" class="card-img-top" alt="@car.ModelName" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">@car.Brand.Name @car.ModelName</h5>
+                    <p class="card-text text-muted mb-3">@car.Year р. • $@car.Price.ToString("N0")</p>
+                    <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.Id" class="btn btn-sm btn-primary w-100">Огляд</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- 3. Запрошення в меню (Список всіх авто) -->
+<div class="text-center mt-5 mb-5 py-5 bg-light rounded-3 border">
+    <h2 class="mb-3">Шукаєте щось конкретне?</h2>
+    <p class="text-muted mb-4 fs-5">Використовуйте зручні фільтри за маркою, кузовом, роком та ціною.</p>
+    <a asp-controller="Cars" asp-action="Index" class="btn btn-dark btn-lg px-5 py-3 rounded-pill shadow">
+        Перейти до повного каталогу ➔
+    </a>
+</div>

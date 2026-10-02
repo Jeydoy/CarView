@@ -1,0 +1,65 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+        margin-bottom: 60px; /* Це стандартний рядок, який там уже був - залиш його */
+        position: relative;
+        background-color: #212529;
+        overflow-x: hidden;
+
+}
+        /* А цей блок встав одразу під body */
+    body::before {
+        content: "";
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background-image: url('/images/logos-pattern.png');
+        background-repeat: repeat;
+        background-size: 800px; /* Твій налаштований розмір */
+        transform: rotate(-15deg);
+        opacity: 0.2; /* Твоя налаштована прозорість */
+        z-index: -1;
+        pointer-events: none;
+        /* Додаємо анімацію: назва, тривалість, рівномірно, нескінченно */
+        animation: backgroundFlow 40s linear infinite;
+    }
+
+/* Створюємо саму анімацію руху */
+@keyframes backgroundFlow {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        /* Зміщуємо фон по діагоналі. Значення має приблизно співпадати з background-size */
+        background-position: -800px 800px;
+    }
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}

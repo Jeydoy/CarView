@@ -1,0 +1,60 @@
+@model CarView.Models.Brand
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container mt-5 text-white mb-5">
+    <div class="card bg-dark border-secondary shadow-lg">
+        <div class="card-body p-5">
+            <div class="row mb-4 border-bottom border-secondary pb-4">
+                
+                <!-- Ліва колонка: Логотип і Назва (центровані) -->
+                <div class="col-md-4 text-center d-flex flex-column justify-content-center align-items-center border-end border-secondary">
+                    @if (!string.IsNullOrEmpty(Model.LogoUrl))
+                    {
+                        <!-- Зміни шлях в БД на /images/твоя_картинка.png, щоб це запрацювало -->
+                        <img src="@Model.LogoUrl" alt="@Model.Name" class="img-fluid rounded mb-3" style="max-height: 160px; object-fit: contain;" />
+                    }
+                    <h1 class="display-5 text-info fw-bold m-0">@Model.Name</h1>
+                </div>
+
+                <!-- Права колонка: Деталі бренду -->
+                <div class="col-md-8 d-flex flex-column justify-content-center ps-md-5 mt-4 mt-md-0">
+                    <p class="fs-4 mb-2">
+                        <strong class="text-secondary">Засновники:</strong> 
+                        <span class="text-white">@(Model.Founders ?? "Невідомо")</span>
+                    </p>
+                    <p class="fs-4 mb-2">
+                        <strong class="text-secondary">Країна:</strong> 
+                        <span class="text-white">@(Model.Country ?? "Невідомо")</span>
+                    </p>
+                    <p class="fs-4 mb-2">
+                        <strong class="text-secondary">Рік заснування:</strong> 
+                        <span class="text-white">@(Model.YearFounded != 0 ? Model.YearFounded.ToString() : "Невідомо")</span>
+                    </p>
+                    <p class="fs-4 mb-2">
+                        <strong class="text-secondary">Продажі за рік:</strong> 
+                        <span class="text-white">@(Model.AnnualSales?.ToString("N0") ?? "Немає даних") шт.</span>
+                    </p>
+                    <p class="fs-4 mb-2">
+                        <strong class="text-secondary">Популярні моделі:</strong> 
+                        <span class="text-white">@(Model.PopularModels ?? "Не вказано")</span>
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="mt-4">
+                <h3 class="text-info mb-3">Про компанію</h3>
+                <p class="lead text-light text-opacity-75" style="line-height: 1.8;">
+                    @(Model.Description ?? "Інформація про цей бренд ще не додана.")
+                </p>
+            </div>
+            
+            <div class="mt-5 text-center">
+                <a asp-controller="Cars" asp-action="Index" asp-route-brandId="@Model.Id" class="btn btn-outline-info btn-lg px-5">Дивитись автомобілі @Model.Name</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+@model IEnumerable<CarView.Models.Brand>
+
+@{
+    ViewData["Title"] = "Авто компанії";
+}
+
+<div class="container mt-5 text-white mb-5">
+    <h1 class="text-info border-bottom border-info pb-3 mb-5 text-center">Автомобільні бренди</h1>
+
+    <div class="row g-4">
+        @foreach (var brand in Model)
+        {
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <!-- Картка клікабельна і веде на деталі бренду -->
+                <a asp-action="Details" asp-route-id="@brand.Id" class="text-decoration-none">
+                    <div class="card bg-dark border-secondary h-100 shadow-sm" style="transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        <div class="card-body text-center d-flex align-items-center justify-content-center" style="height: 150px; background-color: rgba(255,255,255,0.05);">
+                            @if (!string.IsNullOrEmpty(brand.LogoUrl))
+                            {
+                                <img src="@brand.LogoUrl" alt="@brand.Name" style="max-height: 100px; max-width: 100%; object-fit: contain;" />
+                            }
+                            else
+                            {
+                                <h3 class="text-secondary fw-bold">@brand.Name</h3>
+                            }
+                        </div>
+                        <div class="card-footer border-secondary text-center">
+                            <h5 class="text-light m-0">@brand.Name</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>

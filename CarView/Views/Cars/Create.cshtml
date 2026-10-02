@@ -1,0 +1,122 @@
+@model CarView.ViewModels.CarCreateViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Car</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Car.ModelName" class="control-label"></label>
+                <input asp-for="Car.ModelName" class="form-control" />
+                <span asp-validation-for="Car.ModelName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Car.Year" class="control-label"></label>
+                <input asp-for="Car.Year" class="form-control" />
+                <span asp-validation-for="Car.Year" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Car.Price" class="control-label"></label>
+                <input asp-for="Car.Price" class="form-control" />
+                <span asp-validation-for="Car.Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Car.BodyType" class="control-label"></label>
+                <input asp-for="Car.BodyType" class="form-control" />
+                <span asp-validation-for="Car.BodyType" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Car.Transmission" class="control-label"></label>
+                <input asp-for="Car.Transmission" class="form-control" />
+                <span asp-validation-for="Car.Transmission" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Car.FuelType" class="control-label"></label>
+                <input asp-for="Car.FuelType" class="form-control" />
+                <span asp-validation-for="Car.FuelType" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Car.HorsePower" class="control-label"></label>
+                <input asp-for="Car.HorsePower" class="form-control" placeholder="Напр.: 612" />
+                <span asp-validation-for="Car.HorsePower" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Car.Drivetrain" class="control-label"></label>
+                <input asp-for="Car.Drivetrain" class="form-control" placeholder="Напр.: Повний (4MATIC+)" />
+                <span asp-validation-for="Car.Drivetrain" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Car.EngineCapacity" class="control-label"></label>
+                <input asp-for="Car.EngineCapacity" class="form-control" placeholder="Напр.: 4.0 V8 BiTurbo" />
+                <span asp-validation-for="Car.EngineCapacity" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Car.Description" class="control-label"></label>
+                <input asp-for="Car.Description" class="form-control" />
+                <span asp-validation-for="Car.Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Car.ViewsCount" class="control-label"></label>
+                <input asp-for="Car.ViewsCount" class="form-control" />
+                <span asp-validation-for="Car.ViewsCount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Car.LikesCount" class="control-label"></label>
+                <input asp-for="Car.LikesCount" class="form-control" />
+                <span asp-validation-for="Car.LikesCount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Car.BrandId" class="control-label"></label>
+                <input asp-for="Car.BrandId" class="form-control" />
+                <span asp-validation-for="Car.BrandId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Car.Brand" class="control-label"></label>
+                <input asp-for="Car.Brand" class="form-control" />
+                <span asp-validation-for="Car.Brand" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Car.MediaFiles" class="control-label"></label>
+                <input asp-for="Car.MediaFiles" class="form-control" />
+                <span asp-validation-for="Car.MediaFiles" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UploadedFile" class="control-label"></label>
+                <input asp-for="UploadedFile" type="file" class="form-control" accept="image/*" />
+                <span asp-validation-for="UploadedFile" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="AdditionalFiles" class="control-label"></label>
+                <input asp-for="AdditionalFiles" type="file" multiple class="form-control" accept="image/*" />
+                <span asp-validation-for="AdditionalFiles" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

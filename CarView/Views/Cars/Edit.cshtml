@@ -1,0 +1,160 @@
+@model CarView.Models.Car
+
+@{
+    ViewData["Title"] = "Редагування " + Model.ModelName;
+}
+
+<div class="container mt-5 text-white mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h2 class="text-info border-bottom border-info pb-2 mb-4">Редагування автомобіля</h2>
+
+            <!-- ГОЛОВНА ФОРМА РЕДАГУВАННЯ -->
+            <div class="card bg-dark border-secondary shadow-lg">
+                <div class="card-body p-4">
+                    <form asp-action="Edit" enctype="multipart/form-data">
+                        <div asp-validation-summary="All" class="text-danger mb-3 fw-bold fs-5"></div>
+
+                        <!-- Приховані поля -->
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="ViewsCount" />
+                        <input type="hidden" asp-for="LikesCount" />
+
+                        <div class="row g-3">
+                            <!-- Базова інформація -->
+                            <div class="col-md-6">
+                                <label asp-for="BrandId" class="form-label text-secondary">Марка</label>
+                                <select asp-for="BrandId" class="form-select bg-dark text-white border-secondary" asp-items="ViewBag.BrandId"></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="ModelName" class="form-label text-secondary"></label>
+                                <input asp-for="ModelName" class="form-control bg-dark text-white border-secondary" />
+                                <span asp-validation-for="ModelName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Year" class="form-label text-secondary"></label>
+                                <input asp-for="Year" class="form-control bg-dark text-white border-secondary" />
+                                <span asp-validation-for="Year" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Price" class="form-label text-secondary"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark text-info border-secondary">$</span>
+                                    <input asp-for="Price" class="form-control bg-dark text-white border-secondary" />
+                                </div>
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+
+                            <!-- Технічні характеристики -->
+                            <h5 class="text-info mt-4 mb-2">Технічні характеристики</h5>
+                            <hr class="border-secondary mt-0" />
+
+                            <div class="col-md-4">
+                                <label asp-for="EngineCapacity" class="form-label text-secondary"></label>
+                                <input asp-for="EngineCapacity" class="form-control bg-dark text-white border-secondary" />
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="HorsePower" class="form-label text-secondary"></label>
+                                <input asp-for="HorsePower" class="form-control bg-dark text-white border-secondary" />
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Drivetrain" class="form-label text-secondary"></label>
+                                <input asp-for="Drivetrain" class="form-control bg-dark text-white border-secondary" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="BodyType" class="form-label text-secondary"></label>
+                                <select asp-for="BodyType" class="form-select bg-dark text-white border-secondary" asp-items="Html.GetEnumSelectList<BodyType>()"></select>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Transmission" class="form-label text-secondary"></label>
+                                <select asp-for="Transmission" class="form-select bg-dark text-white border-secondary" asp-items="Html.GetEnumSelectList<Transmission>()"></select>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="FuelType" class="form-label text-secondary"></label>
+                                <select asp-for="FuelType" class="form-select bg-dark text-white border-secondary" asp-items="Html.GetEnumSelectList<FuelType>()"></select>
+                            </div>
+
+                            <!-- Опис -->
+                            <div class="col-12 mt-4">
+                                <label asp-for="Description" class="form-label text-secondary"></label>
+                                <textarea asp-for="Description" class="form-control bg-dark text-white border-secondary" rows="5"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <!-- Завантаження нових фотографій -->
+                            <h5 class="text-info mt-4 mb-2">Оновлення фотографій</h5>
+                            <hr class="border-secondary mt-0" />
+
+                            <div class="col-md-6 mt-3">
+                                <label class="form-label text-secondary">Нове головне фото (замінить поточне)</label>
+                                <input type="file" name="UploadedFile" class="form-control bg-dark text-white border-secondary" accept="image/*" />
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label class="form-label text-secondary">Додати фото в галерею (можна декілька)</label>
+                                <input type="file" name="AdditionalFiles" multiple class="form-control bg-dark text-white border-secondary" accept="image/*" />
+                            </div>
+                        </div>
+
+                        <!-- Кнопки збереження - тепер вони ТОЧНО ВСЕРЕДИНІ форми -->
+                        <div class="d-flex justify-content-between mt-5">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">Скасувати</a>
+                            <button type="submit" class="btn btn-info px-5 fw-bold text-dark">Зберегти зміни</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ГАЛЕРЕЯ ДЛЯ ВИДАЛЕННЯ - винесена за межі головної форми -->
+            <div class="card bg-dark border-secondary shadow-lg mt-4 mb-5">
+                <div class="card-body p-4">
+                    @if (Model.MediaFiles != null && Model.MediaFiles.Any())
+                    {
+                        <h5 class="text-info mb-3">Поточні медіафайли</h5>
+                        <div class="row g-3">
+                            @foreach (var photo in Model.MediaFiles)
+                            {
+                                var cleanUrl = photo.FileUrl?.Replace("\"", "").Trim() ?? "";
+                                bool isVideo = cleanUrl.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase);
+
+                                <div class="col-md-3 col-6 text-center">
+                                    <div class="ratio ratio-4x3 mb-2">
+                                        @if (isVideo)
+                                        {
+                                            <video src="@cleanUrl" class="rounded border border-secondary" style="object-fit: cover;" muted playsinline></video>
+                                        }
+                                        else
+                                        {
+                                            <img src="@cleanUrl" class="rounded border border-secondary" style="object-fit: cover;" alt="Медіа" />
+                                        }
+                                    </div>
+
+                                    <form asp-action="DeletePhoto" method="post">
+                                        <input type="hidden" name="mediaId" value="@photo.Id" />
+                                        <input type="hidden" name="carId" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger w-100"
+                                                onclick="return confirm('Видалити назавжди?');">
+                                            🗑 Видалити @(photo.IsMain ? "(Головне)" : "")
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-secondary text-center">Додаткових фотографій поки немає.</p>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
