@@ -475,4 +475,23 @@ public class CarsController : Controller
     {
         return _context.Cars.Any(e => e.Id == id);
     }
+
+    public async Task<IActionResult> Map()
+    {
+        var carsWithLocation = await _context.Cars
+            .Include(c => c.Brand)
+            .Where(c => c.Latitude != null && c.Longitude != null)
+            .Select(c => new
+            {
+                c.Id,
+                c.ModelName,
+                c.Price,
+                BrandName = c.Brand.Name,
+                c.Latitude,
+                c.Longitude
+            })
+            .ToListAsync();
+
+        return View(carsWithLocation);
+    }
 }

@@ -1,17 +1,25 @@
 @model CarView.Models.Car
 
 @{
-    ViewData["Title"] = $"{Model.Brand?.Name} {Model.ModelName} — Огляд";
+    // SEO Оптимізація: Динамічно формуємо контент на основі даних авто
+    ViewData["Title"] = $"{Model.Brand.Name} {Model.ModelName} - Огляд, фото, ціна";
+    
+    ViewData["MetaDescription"] = $"Детальний огляд {Model.Brand.Name} {Model.ModelName} {Model.Year} року. Актуальна ціна: ${Model.Price.ToString("N0")}. Перегляньте характеристики, галерею та історію кожного авто на CarView.";
+    
+    ViewData["MetaKeywords"] = $"{Model.Brand.Name}, {Model.ModelName}, {Model.Year}, купити авто, спорткар, CarView, ціна {Model.Brand.Name}";
 
-    // Шукаємо головне фото для великого банера
-    var mainPoster = Model.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl
-                     ?? Model.MediaFiles?.FirstOrDefault()?.FileUrl
+var mainBannerUrl = Model.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl 
+                     ?? Model.MediaFiles?.FirstOrDefault()?.FileUrl 
                      ?? "/images/placeholder.jpg";
 }
 
+<!-- Важливо для SEO: Головний заголовок сторінки має бути в тезі H1 (лише один на сторінку) -->
+<h1 class="visually-hidden">@Model.Brand.Name @Model.ModelName</h1>
+
+
 <!-- Hero Section (Головний постер від краю до краю) -->
 <div class="position-relative overflow-hidden mb-5 shadow-lg"
-     style="background-image: url('@mainPoster'); background-size: cover; background-position: center; height: 55vh; width: 100vw; margin-left: calc(-50vw + 50%);">
+     style="background-image: url('@mainBannerUrl'); background-size: cover; background-position: center; height: 55vh; width: 100vw; margin-left: calc(-50vw + 50%);">
 
     <!-- Затемнення фону для кращого читання тексту -->
     <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(0,0,0,0.6);"></div>
@@ -120,18 +128,26 @@
             <!-- Секція Галереї -->
             <section id="gallery" class="mb-5" style="scroll-margin-top: 100px;">
                 <h2 class="mb-4 text-info border-bottom border-info pb-2">Галерея</h2>
-                <div class="row g-3">
+               <div class="row row-cols-1 row-cols-md-2 g-4">
+                @{ int index = 0; }
                     @if (Model.MediaFiles != null && Model.MediaFiles.Any(m => !m.IsMain))
                     {
-                        foreach (var media in Model.MediaFiles.Where(m => !m.IsMain))
-                        {
-                            <div class="col-md-6 col-sm-6">
-                                <!-- ratio-4x3 робить усі додаткові фото однакового формату -->
-                                <div class="ratio ratio-4x3">
-                                    <img src="@media.FileUrl" class="rounded shadow-sm border border-secondary" style="object-fit: cover;" alt="Фото @Model.ModelName" />
-                                </div>
-                            </div>
-                        }
+           @foreach (var media in Model.MediaFiles){
+        <div class="col">
+            <!-- Додано w-100, height: 250px та object-fit: cover -->
+            <img src="@media.FileUrl" 
+                 class="img-fluid rounded shadow-sm w-100" 
+                 alt="Фото авто" 
+                 style="height: 250px; object-fit: cover; cursor: zoom-in; transition: transform 0.2s;"
+                 data-bs-toggle="modal" 
+                 data-bs-target="#photoLightbox"
+                 onclick="openLightbox(@index)"
+                 onmouseover="this.style.transform='scale(1.02)'" 
+                 onmouseout="this.style.transform='scale(1)'" />
+        </div>
+        index++;
+    }
+
                     }
                     else
                     {
@@ -191,16 +207,88 @@
                     ⚙️ Редагувати авто (Адмін)
                 </a>
 
+                @if (!string.IsNullOrEmpty(Model.EngineSoundUrl))
+{
+    <div class="mt-4 text-center">
+        <!-- Збільшено max-width до 350px для більшого розміру -->
+        <img id="gasPedal" src="/images/pedal.png" alt="Педаль газу" 
+             style="width: 100%; max-width: 350px; border: 2px solid #0dcaf0; border-radius: 12px; box-shadow: 0 0 15px rgba(13, 202, 240, 0.4); cursor: pointer; user-select: none; touch-action: manipulation; transition: all 0.1s ease-out;" />
+        
+        <audio id="engineSound" src="@Model.EngineSoundUrl" preload="auto"></audio>
+    </div>
+}
+
             </div>
         </div>
 
     </div>
 </div>
 
+<!-- Повноекранний Lightbox зі слайдером -->
+<div class="modal fade" id="photoLightbox" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content" style="background-color: rgba(0, 0, 0, 0.95); border: none;">
+            
+            <!-- Кнопка закриття (біла) -->
+            <div class="modal-header border-0 position-absolute top-0 end-0 z-3">
+                <button type="button" class="btn-close btn-close-white fs-4 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body d-flex justify-content-center align-items-center p-0">
+                
+                <!-- Bootstrap Carousel -->
+                <div id="galleryCarousel" class="carousel slide w-100 h-100" data-bs-theme="dark">
+                    <div class="carousel-inner h-100">
+                        @{ int modalIndex = 0; }
+                        @foreach (var media in Model.MediaFiles)
+                        {
+                            <div class="carousel-item h-100 @(modalIndex == 0 ? "active" : "")">
+                                <div class="d-flex justify-content-center align-items-center h-100">
+                                    <img src="@media.FileUrl" class="d-block" style="max-height: 95vh; max-width: 95vw; object-fit: contain;" alt="Фото авто">
+                                </div>
+                            </div>
+                            modalIndex++;
+                        }
+                    </div>
+                    
+                    <!-- Стрілка ВЛІВО -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev" style="width: 10%;">
+                        <span class="carousel-control-prev-icon" aria-hidden="true" style="width: 3rem; height: 3rem; filter: drop-shadow(0 0 5px rgba(0,0,0,1));"></span>
+                        <span class="visually-hidden">Попередня</span>
+                    </button>
+                    <!-- Стрілка ВПРАВО -->
+                    <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next" style="width: 10%;">
+                        <span class="carousel-control-next-icon" aria-hidden="true" style="width: 3rem; height: 3rem; filter: drop-shadow(0 0 5px rgba(0,0,0,1));"></span>
+                        <span class="visually-hidden">Наступна</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
+
+ <script>
+function openLightbox(index) {
+    // Отримуємо елемент каруселі
+    var myCarouselElement = document.getElementById('galleryCarousel');
+    
+    // Ініціалізуємо карусель через Bootstrap API
+    var carousel = bootstrap.Carousel.getInstance(myCarouselElement);
+    if (!carousel) {
+        carousel = new bootstrap.Carousel(myCarouselElement);
+    }
+    
+    // Перемикаємо на потрібний слайд
+    carousel.to(index);
+}
+</script>
+
+  <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Отримуємо реальні дані з нашої моделі C#
         const totalViews = @(Model.ViewsCount > 0 ? Model.ViewsCount : 10); // Захист від нулів
@@ -282,5 +370,58 @@
                 }
             }
         });
+    });
+  </script>
+
+ <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const pedal = document.getElementById('gasPedal');
+        const engine = document.getElementById('engineSound');
+        
+        if (!pedal || !engine) return;
+
+        let fadeInterval;
+
+        function pressGas(e) {
+            e.preventDefault();
+            
+            // Зупиняємо процес затухання, якщо натиснули знову до його закінчення
+            clearInterval(fadeInterval);
+            
+            // Відтворюємо завжди з початку на максимальній гучності
+            engine.currentTime = 0; 
+            engine.volume = 1.0; 
+            engine.play();
+            
+            // Ефект натискання (вдавлюється і світіння стає яскравішим)
+            pedal.style.transform = "scale(0.95) translateY(10px)";
+            pedal.style.boxShadow = "0 0 25px rgba(13, 202, 240, 0.8)";
+        }
+
+        function releaseGas(e) {
+            e.preventDefault();
+            
+            // Повертаємо педаль у вихідний стан
+            pedal.style.transform = "scale(1) translateY(0px)";
+            pedal.style.boxShadow = "0 0 15px rgba(13, 202, 240, 0.4)";
+            
+            // Плавне затухання звуку
+            clearInterval(fadeInterval);
+            fadeInterval = setInterval(() => {
+                if (engine.volume > 0.05) {
+                    engine.volume = Math.max(0, engine.volume - 0.05); // Зменшуємо гучність
+                } else {
+                    engine.pause(); // Ставимо на паузу, коли звук майже зник
+                    clearInterval(fadeInterval);
+                }
+            }, 40); // 40 мілісекунд - швидкість затухання (можна змінити для довшого ефекту)
+        }
+
+        pedal.addEventListener('mousedown', pressGas);
+        pedal.addEventListener('mouseup', releaseGas);
+        pedal.addEventListener('mouseleave', releaseGas);
+        
+        pedal.addEventListener('touchstart', pressGas);
+        pedal.addEventListener('touchend', releaseGas);
     });
 </script>

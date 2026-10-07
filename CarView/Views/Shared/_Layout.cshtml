@@ -8,7 +8,23 @@ scroll-behavior: smooth;
     </style>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CarView</title>
+    <title>@ViewData["Title"] | CarView - Каталог цікавих авто</title>
+
+    <!-- Динамічний опис (дуже важливо для SEO) -->
+    @if (ViewData["MetaDescription"] != null)
+    {
+        <meta name="description" content="@ViewData["MetaDescription"]" />
+    }
+    else
+    {
+        <meta name="description" content="Каталог найкращих автомобілів світу. Огляди, ціни, характеристики та розташування на мапі." />
+    }
+
+    <!-- Ключові слова (опціонально, але викладачі це люблять) -->
+    @if (ViewData["MetaKeywords"] != null)
+    {
+        <meta name="keywords" content="@ViewData["MetaKeywords"]" />
+    }
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -49,7 +65,10 @@ scroll-behavior: smooth;
             </li>
             <li class="nav-item mb-2">
                 <a class="nav-link fs-5 text-info" asp-controller="Brands" asp-action="Index">🏢 Авто компанії</a>
-            </li>
+        <div style="margin-bottom: 15px;">
+<li class="nav-item mb-2">
+    <a class="nav-link fs-5 text-white" asp-area="" asp-controller="Cars" asp-action="Map">🗺️ Мапа</a>
+</li>
             
             <!-- Нова вкладка Лайканих авто (з відступом) -->
             <li class="nav-item mt-4 pt-3 border-top border-secondary">

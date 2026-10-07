@@ -49,34 +49,124 @@
     <!-- Не забудь додати клас text-white або bg-dark до карток, щоб вони пасували до темної теми -->
 }
 
-<!-- 2. Горизонтальний список інших машин (Скрол справа-наліво) -->
-<div class="container-fluid px-0 mb-5">
-    <h3 class="mb-4 px-3">Інші авто</h3>
-    <!-- Класи d-flex flex-nowrap overflow-auto створюють горизонтальну стрічку -->
-    <div class="d-flex flex-nowrap overflow-auto pb-4 px-3 gap-4" style="scroll-snap-type: x mandatory;">
+<!-- 2. Горизонтальний список інших машин -->
+<div class="container-fluid px-0 mb-5 position-relative">
+    <h3 class="mb-4 px-3" style="color: #fff;">Інші авто</h3>
+
+    <style>
+        .car-card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .car-card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(13, 202, 240, 0.2) !important;
+        }
+        /* Приховуємо стандартний скролбар */
+        .hide-scroll {
+            -ms-overflow-style: none;  /* IE та Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .hide-scroll::-webkit-scrollbar {
+            display: none; /* Chrome, Safari та Opera */
+        }
+        /* Фірмові блакитні стрілки */
+        .scroll-btn {
+            width: 45px; 
+            height: 45px; 
+            border-radius: 50%; 
+            background-color: #0dcaf0; 
+            color: #121212; 
+            border: none; 
+            font-size: 20px; 
+            font-weight: bold;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(13, 202, 240, 0.4);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .scroll-btn:hover {
+            transform: scale(1.1);
+            background-color: #0bb5d8;
+            box-shadow: 0 0 20px rgba(13, 202, 240, 0.7);
+        }
+    </style>
+
+    <!-- Кнопка ВЛІВО -->
+    <button id="btnScrollLeft" class="scroll-btn position-absolute start-0 top-50 translate-middle-y z-3 ms-2">
+        &#10094;
+    </button>
+
+    <!-- Контейнер зі списком (додано id та клас hide-scroll) -->
+    <div id="carsScrollWrapper" class="d-flex flex-nowrap overflow-auto pb-4 px-3 gap-4 hide-scroll" style="scroll-snap-type: x mandatory;">
+        
         @foreach (var car in Model.SimpleCars)
         {
-            var carImage = car.MediaFiles.FirstOrDefault(m => m.IsMain)?.FileUrl
-                           ?? car.MediaFiles.FirstOrDefault()?.FileUrl
+            var carImage = car.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl 
+                           ?? car.MediaFiles?.FirstOrDefault()?.FileUrl 
                            ?? "/images/placeholder.jpg";
 
-            <div class="card shadow-sm flex-shrink-0" style="width: 300px; scroll-snap-align: start; border-radius: 12px; overflow: hidden;">
-                <img src="@carImage" class="card-img-top" alt="@car.ModelName" style="height: 200px; object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold">@car.Brand.Name @car.ModelName</h5>
-                    <p class="card-text text-muted mb-3">@car.Year р. • $@car.Price.ToString("N0")</p>
-                    <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.Id" class="btn btn-sm btn-primary w-100">Огляд</a>
+            <div class="col" style="min-width: 300px; scroll-snap-align: start;"> 
+                <div class="card h-100 bg-dark text-white border-0 shadow car-card-hover" style="border-radius: 12px; overflow: hidden; background: linear-gradient(145deg, #1e1e1e, #292929);">
+                    
+                    <!-- Додано w-100 та object-position для ідеального кадрування -->
+                    <img src="@carImage" class="card-img-top w-100" alt="Фото авто" style="height: 200px; object-fit: cover; object-position: center;">
+                    
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold" style="color: #0dcaf0;">@car.Brand.Name @car.ModelName</h5>
+                        
+                        <p class="card-text mb-4">
+                            <span class="text-white-50">@car.Year р. • </span>
+                            <span class="fw-bold" style="color: #28a745;">$@car.Price.ToString("N0")</span>
+                        </p>
+                        
+                        <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.Id" class="btn btn-outline-info mt-auto fw-bold">Огляд</a>
+                    </div>
                 </div>
             </div>
         }
+        
     </div>
+
+    <!-- Кнопка ВПРАВО -->
+    <button id="btnScrollRight" class="scroll-btn position-absolute end-0 top-50 translate-middle-y z-3 me-2">
+        &#10095;
+    </button>
 </div>
 
+<!-- Скрипт для плавного прокручування по кліку на стрілки -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const scrollWrapper = document.getElementById('carsScrollWrapper');
+        const btnLeft = document.getElementById('btnScrollLeft');
+        const btnRight = document.getElementById('btnScrollRight');
+
+        // Ширина прокрутки (приблизно ширина однієї картки + відступ)
+        const scrollAmount = 324; 
+
+        btnLeft.addEventListener('click', () => {
+            scrollWrapper.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+
+        btnRight.addEventListener('click', () => {
+            scrollWrapper.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+    });
+</script>
+
 <!-- 3. Запрошення в меню (Список всіх авто) -->
-<div class="text-center mt-5 mb-5 py-5 bg-light rounded-3 border">
-    <h2 class="mb-3">Шукаєте щось конкретне?</h2>
-    <p class="text-muted mb-4 fs-5">Використовуйте зручні фільтри за маркою, кузовом, роком та ціною.</p>
-    <a asp-controller="Cars" asp-action="Index" class="btn btn-dark btn-lg px-5 py-3 rounded-pill shadow">
-        Перейти до повного каталогу ➔
-    </a>
+<div class="container my-5">
+    <!-- Темний фон з плавним градієнтом та блакитною тінню -->
+    <div class="p-5 text-center bg-dark text-white border-0" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(13, 202, 240, 0.15);">
+        
+        <h2 class="fw-bold mb-3" style="color: #0dcaf0;">Шукаєте щось конкретне?</h2>
+        
+        <p class="fs-5 text-white-50 mb-4">Використовуйте зручні фільтри за маркою, кузовом, роком та ціною.</p>
+        
+        <a asp-controller="Cars" asp-action="Index" class="btn btn-info btn-lg fw-bold px-5 py-3 shadow" style="border-radius: 30px; color: #121212; transition: all 0.3s ease;">
+            Перейти до повного каталогу ➔
+        </a>
+        
+    </div>
 </div>

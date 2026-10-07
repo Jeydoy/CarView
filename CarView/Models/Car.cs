@@ -38,8 +38,10 @@ namespace CarView.Models
 
         public List<CarMedia> MediaFiles { get; set; } = new List<CarMedia>();
 
+        public double? Latitude { get; set; } //широта
+        public double? Longitude { get; set; } //довгота
 
-
+       public string? EngineSoundUrl { get; set; } 
 
 
     }

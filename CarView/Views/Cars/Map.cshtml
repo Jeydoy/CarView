@@ -1,0 +1,82 @@
+﻿@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Мапа автомобілів";
+}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<!-- Загортаємо все у контейнер, щоб мапа не виїжджала за краї екрана -->
+<div class="container mt-4 mb-5">
+
+    <!-- Картка з тінню (акцент) -->
+    <div class="card shadow-lg border-0 rounded-4">
+
+        <!-- Шапка картки з градієнтом або кольором -->
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center p-3" style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+            <h4 class="mb-0" style="color: #0dcaf0;">
+                📍 Розташування автомобілів
+            </h4>
+
+            <!-- Компактний фільтр -->
+            <div class="d-flex align-items-center gap-2">
+                <label for="brandFilter" class="mb-0 text-light fw-bold">Бренд:</label>
+                <select id="brandFilter" class="form-select form-select-sm" style="width: 150px;" onchange="filterMap()">
+                    <option value="All">Усі бренди</option>
+                    <option value="Audi">Audi</option>
+                    <option value="Mercedes">Mercedes</option>
+                    <option value="Bugatti">Bugatti</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Тіло картки, де лежить мапа -->
+        <div class="card-body p-0">
+            <!-- z-index: 1 запобігає накладанню мапи на меню сайту -->
+            <div id="map" style="height: 600px; width: 100%; border-bottom-left-radius: 1rem; border-bottom-right-radius: 1rem; z-index: 1;"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    var map = L.map('map').setView([49.0, 31.0], 6);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    var cars = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+    var markers = [];
+
+    function drawMarkers(filterBrand) {
+        markers.forEach(m => map.removeLayer(m));
+        markers = [];
+
+        cars.forEach(function(car) {
+            if (filterBrand === 'All' || car.BrandName === filterBrand) {
+                // Додаємо стилізований Popup
+                var popupContent = `
+                    <div style="text-align: center;">
+                        <h6 style="margin-bottom: 5px; color: #000;"><b>${car.BrandName} ${car.ModelName}</b></h6>
+                        <span class="badge bg-success" style="font-size: 14px;">$${car.Price.toLocaleString()}</span>
+                    </div>
+                `;
+
+                var marker = L.marker([car.Latitude, car.Longitude])
+                    .addTo(map)
+                    .bindPopup(popupContent);
+
+                markers.push(marker);
+            }
+        });
+    }
+
+    drawMarkers('All');
+
+    function filterMap() {
+        var selectedBrand = document.getElementById("brandFilter").value;
+        drawMarkers(selectedBrand);
+    }
+</script>
