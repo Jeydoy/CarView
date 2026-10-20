@@ -8,5 +8,6 @@ namespace CarView.ViewModels
     {
         public Car HeroCar { get; set; }
         public List<Car> SimpleCars { get; set; }
+        //associated brands for the cars
     }
 }
