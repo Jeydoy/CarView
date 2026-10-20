@@ -27,7 +27,7 @@
             {
                 <div class="card bg-dark border-secondary mb-4 shadow-sm position-relative" style="transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 15px rgba(0,0,0,0.5)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                     
-                    <!-- КНОПКА ЛАЙКУ (Опущена нижче, щоб не закривати ціну) -->
+                    <!-- КНОПКА ЛАЙКУ -->
                     @{
                         var likedCars = ViewBag.LikedCars as List<string> ?? new List<string>();
                         bool isLiked = likedCars.Contains(car.Id.ToString());
@@ -39,7 +39,7 @@
                         </button>
                     </form>
 
-                    <!-- Тіло картки (клікабельне) -->
+                    <!-- Тіло картки -->
                     <a asp-action="Details" asp-route-id="@car.Id" class="text-decoration-none text-white d-block">
                         <div class="row g-0">
                             

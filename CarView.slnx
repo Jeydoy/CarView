@@ -1,3 +1,7 @@
 <Solution>
+  <Project Path="CarView.E2ETests/CarView.E2ETests.csproj" Id="c181c194-f415-4213-bdf6-ce9b370ab93f" />
   <Project Path="CarView/CarView.csproj" />
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
 </Solution>

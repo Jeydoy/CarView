@@ -10,7 +10,17 @@ scroll-behavior: smooth;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] | CarView - Каталог цікавих авто</title>
 
-    <!-- Динамічний опис (дуже важливо для SEO) -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3JVKT9HY16"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3JVKT9HY16');
+    </script>
+
+    <!-- Динамічний опис-->
     @if (ViewData["MetaDescription"] != null)
     {
         <meta name="description" content="@ViewData["MetaDescription"]" />
@@ -20,7 +30,6 @@ scroll-behavior: smooth;
         <meta name="description" content="Каталог найкращих автомобілів світу. Огляди, ціни, характеристики та розташування на мапі." />
     }
 
-    <!-- Ключові слова (опціонально, але викладачі це люблять) -->
     @if (ViewData["MetaKeywords"] != null)
     {
         <meta name="keywords" content="@ViewData["MetaKeywords"]" />
@@ -34,22 +43,18 @@ scroll-behavior: smooth;
     <header>
        <nav class="navbar navbar-dark bg-dark border-bottom border-info sticky-top">
     <div class="container-fluid">
-        <!-- Кнопка-гамбургер -->
         <button class="btn btn-dark border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
         
-        <!-- Логотип по центру -->
         <a class="navbar-brand mx-auto text-info fw-bold fs-4" asp-controller="Home" asp-action="Index">CarView</a>
         
-        <!-- Кнопка "Улюблені (Лайкані)" зверху справа -->
         <a asp-controller="Cars" asp-action="Favorites" class="btn btn-dark border-0 fs-5 text-danger" style="width: 56px;" title="Лайкані авто">
             ❤️
         </a>
     </div>
 </nav>
 
-<!-- Бокова панель (Offcanvas) -->
 <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
     <div class="offcanvas-header border-bottom border-secondary">
         <h5 class="offcanvas-title text-info fw-bold" id="offcanvasMenuLabel">Меню CarView</h5>
@@ -70,15 +75,30 @@ scroll-behavior: smooth;
     <a class="nav-link fs-5 text-white" asp-area="" asp-controller="Cars" asp-action="Map">🗺️ Мапа</a>
 </li>
             
-            <!-- Нова вкладка Лайканих авто (з відступом) -->
             <li class="nav-item mt-4 pt-3 border-top border-secondary">
                 <a class="nav-link fs-5 text-danger fw-bold" asp-controller="Cars" asp-action="Favorites">❤️ Лайкані авто</a>
             </li>
+<li><hr class="border-secondary my-3" style="opacity: 0.3;"></li>
+
+<li class="nav-item px-3 mb-2">
+    <small class="text-white-50 text-uppercase fw-bold" style="letter-spacing: 1px;">Додатково</small>
+</li>
+
+<li class="nav-item mb-2">
+    <a class="nav-link text-light fs-5" asp-controller="Home" asp-action="About" style="transition: color 0.2s;">
+        ℹ️ Інформація про сайт
+    </a>
+</li>
+
+<li class="nav-item mb-2">
+    <a class="nav-link fs-5 fw-bold" asp-controller="Home" asp-action="Donation" style="color: #28a745; transition: opacity 0.2s;">
+        ☕ Підтримка автора
+    </a>
+</li>
         </ul>
     </div>
 </div>
 
-<!-- Сама бокова панель (Offcanvas), яка виїжджає зліва -->
 <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
     <div class="offcanvas-header border-bottom border-secondary">
         <h5 class="offcanvas-title text-info fw-bold" id="offcanvasMenuLabel">Меню CarView</h5>
@@ -93,7 +113,6 @@ scroll-behavior: smooth;
                 <a class="nav-link fs-5" asp-controller="Cars" asp-action="Index">🚗 Каталог авто</a>
             </li>
             <li class="nav-item mb-2">
-                <!-- Ось наше нове посилання на каталог компаній -->
                 <a class="nav-link fs-5 text-info" asp-controller="Brands" asp-action="Index">🏢 Авто компанії</a>
             </li>
         </ul>
@@ -115,5 +134,31 @@ scroll-behavior: smooth;
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+            <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content bg-dark text-white border-secondary">
+                        <div class="modal-header border-secondary">
+                            <h5 class="modal-title" id="authModalLabel">Авторизація в CarView</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center py-4">
+                            <p class="text-light mb-4">Увійдіть через обліковий запис Google, щоб ставити лайки та отримати доступ до кабінету.</p>
+
+                            <form asp-controller="Account" asp-action="ExternalLogin" method="post">
+                                <button type="submit" class="btn btn-light btn-lg px-4 shadow d-inline-flex align-items-center gap-2">
+                                    <svg width="20" height="20" viewBox="0 0 24 24">
+                                        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.15z" />
+                                        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.36 7.31 24 12 24z" />
+                                        <path fill="#FBBC05" d="M5.28 14.27a7.11 7.11 0 0 1 0-4.54V6.58H1.26a11.96 11.96 0 0 0 0 10.84l4.02-3.15z" />
+                                        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z" />
+                                    </svg>
+                                    <strong>Продовжити з Google</strong>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
 </body>
 </html>

@@ -4,22 +4,20 @@
     ViewData["Title"] = "Головна";
 }
 
-<!-- 1. Велике вікно з постером (Hero Section) -->
+<!-- (Hero Section) -->
 @if (Model.HeroCar != null)
 {
-    <!-- 1. Велике вікно з ВІДЕО на фоні (Від краю до краю) -->
     <div class="position-relative overflow-hidden mb-5"
-         style="height: 65vh; width: 100vw; margin-left: calc(-50vw + 50%);">
+    style="height: 65vh; width: 100vw; margin-left: calc(-50vw + 50%);">
 
         <!-- Фонове відео -->
         <video autoplay loop muted playsinline class="position-absolute top-50 start-50 translate-middle w-100"
-               style="object-fit: cover; min-height: 100%; z-index: 0;">
+        style="object-fit: cover; min-height: 100%; z-index: 0;">
             <source src="~/videos/main-promo.mp4" type="video/mp4" />
         </video>
 
-        <!-- Затемнення поверх відео (Зменшено до 0.3 для більшої світлості) -->
         <div class="position-absolute top-0 start-0 w-100 h-100"
-             style="background-color: rgba(0, 0, 0, 0.3); z-index: 1;"></div>
+        style="background-color: rgba(0, 0, 0, 0.3); z-index: 1;"></div>
 
         <!-- Контент поверх відео -->
         <div class="position-relative z-2 d-flex flex-column justify-content-center align-items-center h-100 text-center">
@@ -33,7 +31,7 @@
 
                 <!-- opacity: 0.8 додає прозорості самій кнопці -->
                 <a asp-controller="Cars" asp-action="Details" asp-route-id="@Model.HeroCar.Id"
-                   class="btn btn-outline-info btn-lg px-5 py-3 fw-bold rounded-pill shadow" style="opacity: 0.8;">
+                class="btn btn-outline-info btn-lg px-5 py-3 fw-bold rounded-pill shadow" style="opacity: 0.8;">
                     Дізнатися більше
                 </a>
             }
@@ -44,14 +42,11 @@
             }
         </div>
     </div>
-
-    <!-- Далі йде твій список авто... -->
-    <!-- Не забудь додати клас text-white або bg-dark до карток, щоб вони пасували до темної теми -->
 }
 
-<!-- 2. Горизонтальний список інших машин -->
-<div class="container-fluid px-0 mb-5 position-relative">
-    <h3 class="mb-4 px-3" style="color: #fff;">Інші авто</h3>
+<!--  Горизонтальний список інших машин -->
+<div class="container-fluid mb-5 position-relative" style="padding: 0 70px;">
+    <h3 class="mb-4" style="color: #fff;">Інші авто</h3>
 
     <style>
         .car-card-hover {
@@ -93,13 +88,13 @@
         }
     </style>
 
-    <!-- Кнопка ВЛІВО -->
-    <button id="btnScrollLeft" class="scroll-btn position-absolute start-0 top-50 translate-middle-y z-3 ms-2">
+   
+    <button id="btnScrollLeft" class="scroll-btn position-absolute start-0 top-50 translate-middle-y z-3" style="margin-left: 10px;">
         &#10094;
     </button>
 
-    <!-- Контейнер зі списком (додано id та клас hide-scroll) -->
-    <div id="carsScrollWrapper" class="d-flex flex-nowrap overflow-auto pb-4 px-3 gap-4 hide-scroll" style="scroll-snap-type: x mandatory;">
+ 
+    <div id="carsScrollWrapper" class="d-flex flex-nowrap overflow-auto pb-4 gap-4 hide-scroll" style="scroll-snap-type: x mandatory;">
         
         @foreach (var car in Model.SimpleCars)
         {
@@ -110,7 +105,6 @@
             <div class="col" style="min-width: 300px; scroll-snap-align: start;"> 
                 <div class="card h-100 bg-dark text-white border-0 shadow car-card-hover" style="border-radius: 12px; overflow: hidden; background: linear-gradient(145deg, #1e1e1e, #292929);">
                     
-                    <!-- Додано w-100 та object-position для ідеального кадрування -->
                     <img src="@carImage" class="card-img-top w-100" alt="Фото авто" style="height: 200px; object-fit: cover; object-position: center;">
                     
                     <div class="card-body d-flex flex-column">
@@ -129,13 +123,13 @@
         
     </div>
 
-    <!-- Кнопка ВПРАВО -->
-    <button id="btnScrollRight" class="scroll-btn position-absolute end-0 top-50 translate-middle-y z-3 me-2">
+ 
+    <button id="btnScrollRight" class="scroll-btn position-absolute end-0 top-50 translate-middle-y z-3" style="margin-right: 10px;">
         &#10095;
     </button>
 </div>
 
-<!-- Скрипт для плавного прокручування по кліку на стрілки -->
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const scrollWrapper = document.getElementById('carsScrollWrapper');
@@ -155,9 +149,218 @@
     });
 </script>
 
-<!-- 3. Запрошення в меню (Список всіх авто) -->
+<!-- КОНТЕЙНЕР ДЛЯ ГРИ  -->
+<div style="position: relative; width: 100%; max-width: 1200px; margin: 40px auto; border-radius: 16px; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.6);">
+    
+    <canvas id="driftCanvas" width="1200" height="600" style="display: block; width: 100%; height: auto; background-color: #1e293b; border-bottom: 4px solid #0f172a;"></canvas>
+    <div id="gameMenu" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(5px); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10;">
+        <h2 style="color: #f8fafc; font-size: 3.5rem; margin-bottom: 10px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">CarView Drift</h2>
+        <p style="color: #94a3b8; margin-bottom: 40px; font-size: 1.2rem;">Керування: стрілочки ⬆️⬇️⬅️➡️. Дрифти, щоб заробляти очки!</p>
+
+        <button id="playBtn" style="padding: 15px 50px; font-size: 1.5rem; font-weight: 800; color: #fff; background: linear-gradient(to right, #f43f5e, #e11d48); border: none; border-radius: 40px; cursor: pointer; box-shadow: 0 6px 15px rgba(225, 29, 72, 0.5); transition: all 0.2s; text-transform: uppercase;">
+            Start Engine
+        </button>
+        <script>
+   
+    function trackGameStart() {
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'start_drift_game', {
+                'event_category': 'Engagement',
+                'event_label': 'Гравець запустив дрифт'
+            });
+            console.log("Analytics: Custom event sent!"); 
+        }
+    }
+</script>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const canvas = document.getElementById('driftCanvas');
+        const ctx = canvas.getContext('2d');
+        const menu = document.getElementById('gameMenu');
+        const playBtn = document.getElementById('playBtn');
+
+        let isPlaying = false;
+        let animationId;
+        let score = 0;
+
+        const carState = { x: 600, y: 300, vx: 0, vy: 0, angle: -Math.PI / 2, color: '#ef4444' };
+        const keys = {};
+        let skidmarks = [];
+
+        const cones = [];
+        const coneRadius = 8;
+        for (let i = 0; i < Math.PI * 2; i += Math.PI / 2) {
+            cones.push({ x: 400 + Math.cos(i) * 180, y: 300 + Math.sin(i) * 180, r: coneRadius });
+        }
+        for (let i = 0; i < Math.PI * 2; i += Math.PI / 2) {
+            cones.push({ x: 800 + Math.cos(i) * 180, y: 300 + Math.sin(i) * 180, r: coneRadius });
+        }
+
+        playBtn.addEventListener('mouseover', () => playBtn.style.transform = 'scale(1.05) translateY(-2px)');
+        playBtn.addEventListener('mouseout', () => playBtn.style.transform = 'scale(1) translateY(0)');
+
+        window.addEventListener('keydown', (e) => {
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key) && isPlaying) {
+                e.preventDefault();
+            }
+            keys[e.key] = true;
+        });
+        window.addEventListener('keyup', (e) => keys[e.key] = false);
+
+        playBtn.addEventListener('click', () => {
+            carState.x = 600;
+            carState.y = 300;
+            carState.vx = 0;
+            carState.vy = 0;
+            carState.angle = -Math.PI / 2;
+            skidmarks = [];
+            score = 0;
+
+            isPlaying = true;
+            menu.style.display = 'none';
+            update();
+        });
+
+        function update() {
+            if (!isPlaying) return;
+
+           
+            const engineForce = 0.08; 
+            const friction = 0.99;    
+            const turnSpeed = 0.065;  
+            const maxSpeed = 5.5;     
+
+            if (keys['ArrowUp']) {
+                carState.vx += Math.cos(carState.angle) * engineForce;
+                carState.vy += Math.sin(carState.angle) * engineForce;
+            }
+            if (keys['ArrowDown']) {
+                carState.vx -= Math.cos(carState.angle) * engineForce * 0.7;
+                carState.vy -= Math.sin(carState.angle) * engineForce * 0.7;
+            }
+
+            const speed = Math.sqrt(carState.vx ** 2 + carState.vy ** 2);
+
+            if (speed > maxSpeed) {
+                carState.vx = (carState.vx / speed) * maxSpeed;
+                carState.vy = (carState.vy / speed) * maxSpeed;
+            }
+
+            if (speed > 0.5) {
+                const handling = turnSpeed * (1 - (speed / maxSpeed) * 0.2);
+                if (keys['ArrowLeft']) carState.angle -= handling;
+                if (keys['ArrowRight']) carState.angle += handling;
+            }
+
+            carState.x += carState.vx;
+            carState.y += carState.vy;
+            carState.vx *= friction;
+            carState.vy *= friction;
+
+            const carRadius = 12;
+            for (let cone of cones) {
+                let dx = carState.x - cone.x;
+                let dy = carState.y - cone.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < carRadius + cone.r) {
+                    carState.vx *= -0.5;
+                    carState.vy *= -0.5;
+                    carState.x += (dx / distance) * 4;
+                    carState.y += (dy / distance) * 4;
+
+                    score = Math.max(0, score - 50);
+                }
+            }
+
+            if (carState.x < 0) carState.x = canvas.width;
+            if (carState.x > canvas.width) carState.x = 0;
+            if (carState.y < 0) carState.y = canvas.height;
+            if (carState.y > canvas.height) carState.y = 0;
+
+            const velocityAngle = Math.atan2(carState.vy, carState.vx);
+            let angleDiff = Math.abs(velocityAngle - carState.angle);
+            while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+            angleDiff = Math.abs(angleDiff);
+
+          
+          
+            if (speed > 1.5 && angleDiff > 0.2) {
+                skidmarks.push({ x: carState.x, y: carState.y, life: 1.0 });
+
+           
+                let driftPoints = Math.floor(speed * angleDiff * 1.5);
+                score += driftPoints;
+            }
+
+     
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#f97316';
+            for (let cone of cones) {
+                ctx.beginPath();
+                ctx.arc(cone.x, cone.y, cone.r, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            for (let i = skidmarks.length - 1; i >= 0; i--) {
+                let mark = skidmarks[i];
+                ctx.fillStyle = `rgba(0, 0, 0, ${mark.life * 0.6})`;
+                ctx.beginPath();
+                ctx.arc(mark.x, mark.y, 6, 0, Math.PI * 2);
+                ctx.fill();
+                mark.life -= 0.006;
+                if (mark.life <= 0) skidmarks.splice(i, 1);
+            }
+
+            ctx.save();
+            ctx.translate(carState.x, carState.y);
+            ctx.rotate(carState.angle);
+
+            ctx.fillStyle = carState.color;
+            ctx.shadowColor = 'rgba(0,0,0,0.6)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetY = 5;
+            ctx.fillRect(-18, -10, 36, 20);
+
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(2, -8, 8, 16);
+            ctx.fillRect(-12, -8, 4, 16);
+
+            ctx.fillStyle = '#fef08a';
+            ctx.fillRect(16, -9, 3, 4);
+            ctx.fillRect(16, 5, 3, 4);
+
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(-18, -9, 2, 4);
+            ctx.fillRect(-18, 5, 2, 4);
+
+            ctx.restore();
+
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = 'bold 28px "Segoe UI", sans-serif';
+            ctx.textAlign = 'left';
+            ctx.shadowColor = 'rgba(0,0,0,0.8)';
+            ctx.shadowBlur = 4;
+            ctx.fillText(`🔥 DRIFT SCORE: ${score}`, 30, 50);
+            ctx.shadowBlur = 0;
+
+            animationId = requestAnimationFrame(update);
+        }
+    });
+</script>
+
+<!-- 3. Запрошення в меню -->
 <div class="container my-5">
-    <!-- Темний фон з плавним градієнтом та блакитною тінню -->
     <div class="p-5 text-center bg-dark text-white border-0" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(13, 202, 240, 0.15);">
         
         <h2 class="fw-bold mb-3" style="color: #0dcaf0;">Шукаєте щось конкретне?</h2>

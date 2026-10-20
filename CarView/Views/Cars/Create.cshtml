@@ -5,118 +5,193 @@
 }
 
 <h1>Create</h1>
-
 <h4>Car</h4>
 <hr />
+
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
+                <label asp-for="Car.BrandId" class="control-label">Бренд</label>
+                <select asp-for="Car.BrandId" class="form-select" id="brandSelect">
+                    <option value="">-- Почніть вводити назву... --</option>
+                </select>
+                <span asp-validation-for="Car.BrandId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
                 <label asp-for="Car.ModelName" class="control-label"></label>
                 <input asp-for="Car.ModelName" class="form-control" />
                 <span asp-validation-for="Car.ModelName" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Car.Year" class="control-label"></label>
-                <input asp-for="Car.Year" class="form-control" />
-                <span asp-validation-for="Car.Year" class="text-danger"></span>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="Car.Year" class="control-label"></label>
+                    <input asp-for="Car.Year" class="form-control" />
+                    <span asp-validation-for="Car.Year" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Car.Price" class="control-label"></label>
+                    <input asp-for="Car.Price" class="form-control" />
+                    <span asp-validation-for="Car.Price" class="text-danger"></span>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Car.Price" class="control-label"></label>
-                <input asp-for="Car.Price" class="form-control" />
-                <span asp-validation-for="Car.Price" class="text-danger"></span>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label asp-for="Car.BodyType" class="control-label"></label>
+                    <input asp-for="Car.BodyType" class="form-control" />
+                    <span asp-validation-for="Car.BodyType" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Car.Transmission" class="control-label"></label>
+                    <input asp-for="Car.Transmission" class="form-control" />
+                    <span asp-validation-for="Car.Transmission" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Car.FuelType" class="control-label"></label>
+                    <input asp-for="Car.FuelType" class="form-control" />
+                    <span asp-validation-for="Car.FuelType" class="text-danger"></span>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Car.BodyType" class="control-label"></label>
-                <input asp-for="Car.BodyType" class="form-control" />
-                <span asp-validation-for="Car.BodyType" class="text-danger"></span>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label asp-for="Car.HorsePower" class="control-label"></label>
+                    <input asp-for="Car.HorsePower" class="form-control" placeholder="612" />
+                    <span asp-validation-for="Car.HorsePower" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Car.Drivetrain" class="control-label"></label>
+                    <input asp-for="Car.Drivetrain" class="form-control" placeholder="Повний (AWD)" />
+                    <span asp-validation-for="Car.Drivetrain" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Car.EngineCapacity" class="control-label"></label>
+                    <input asp-for="Car.EngineCapacity" class="form-control" placeholder="4.0 V8 BiTurbo" />
+                    <span asp-validation-for="Car.EngineCapacity" class="text-danger"></span>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Car.Transmission" class="control-label"></label>
-                <input asp-for="Car.Transmission" class="form-control" />
-                <span asp-validation-for="Car.Transmission" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Car.FuelType" class="control-label"></label>
-                <input asp-for="Car.FuelType" class="form-control" />
-                <span asp-validation-for="Car.FuelType" class="text-danger"></span>
-            </div>
             <div class="form-group mb-3">
-                <label asp-for="Car.HorsePower" class="control-label"></label>
-                <input asp-for="Car.HorsePower" class="form-control" placeholder="Напр.: 612" />
-                <span asp-validation-for="Car.HorsePower" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Car.Drivetrain" class="control-label"></label>
-                <input asp-for="Car.Drivetrain" class="form-control" placeholder="Напр.: Повний (4MATIC+)" />
-                <span asp-validation-for="Car.Drivetrain" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <label asp-for="Car.EngineCapacity" class="control-label"></label>
-                <input asp-for="Car.EngineCapacity" class="form-control" placeholder="Напр.: 4.0 V8 BiTurbo" />
-                <span asp-validation-for="Car.EngineCapacity" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
                 <label asp-for="Car.Description" class="control-label"></label>
-                <input asp-for="Car.Description" class="form-control" />
+                <textarea asp-for="Car.Description" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Car.Description" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Car.ViewsCount" class="control-label"></label>
-                <input asp-for="Car.ViewsCount" class="form-control" />
-                <span asp-validation-for="Car.ViewsCount" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Car.LikesCount" class="control-label"></label>
-                <input asp-for="Car.LikesCount" class="form-control" />
-                <span asp-validation-for="Car.LikesCount" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Car.BrandId" class="control-label"></label>
-                <input asp-for="Car.BrandId" class="form-control" />
-                <span asp-validation-for="Car.BrandId" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Car.Brand" class="control-label"></label>
-                <input asp-for="Car.Brand" class="form-control" />
-                <span asp-validation-for="Car.Brand" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Car.MediaFiles" class="control-label"></label>
-                <input asp-for="Car.MediaFiles" class="form-control" />
-                <span asp-validation-for="Car.MediaFiles" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UploadedFile" class="control-label"></label>
-                <input asp-for="UploadedFile" type="file" class="form-control" accept="image/*" />
-                <span asp-validation-for="UploadedFile" class="text-danger"></span>
-            </div>
             <div class="form-group mb-3">
-                <label asp-for="AdditionalFiles" class="control-label"></label>
-                <input asp-for="AdditionalFiles" type="file" multiple class="form-control" accept="image/*" />
-                <span asp-validation-for="AdditionalFiles" class="text-danger"></span>
+                <label asp-for="UploadedFile" class="control-label">Головне фото (Постер)</label>
+                <input asp-for="UploadedFile" type="file" class="form-control" accept="image/*" id="posterInput" />
+                <span asp-validation-for="UploadedFile" class="text-danger"></span>
+
+                <img id="posterPreview" src="#" alt="Прев'ю постера" style="display:none; max-width: 250px; margin-top: 15px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-group mb-4">
+                <label asp-for="AdditionalFiles" class="control-label">Додаткові фото (Галерея)</label>
+                <input asp-for="AdditionalFiles" type="file" multiple class="form-control" accept="image/*" id="galleryInput" />
+                <span asp-validation-for="AdditionalFiles" class="text-danger"></span>
+
+                <div id="galleryPreviewContainer" class="d-flex flex-wrap gap-2 mt-3"></div>
+            </div>
+
+            <div class="form-group mb-5 pb-5">
+                <input type="submit" value="Створити авто" class="btn btn-primary px-4 shadow" />
+                <a asp-action="Index" class="btn btn-secondary ms-2">Назад до списку</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        jQuery(document).ready(function ($) {
+
+            $('#brandSelect').select2({
+                placeholder: '-- Почніть вводити назву... --',
+                minimumInputLength: 3,
+                width: '100%', 
+                ajax: {
+                    url: '@Url.Action("SearchBrands", "Cars")',
+                    dataType: 'json',
+                    delay: 300,
+                    data: function (params) {
+                        return {
+                            term: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+
+    <script>
+
+        document.getElementById('posterInput').addEventListener('change', function(event) {
+            const file = event.target.files[0]; 
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('posterPreview');
+                    preview.src = e.target.result; 
+                    preview.style.display = 'block'; 
+                };
+                reader.readAsDataURL(file);
+            }
+
+        });
+        document.getElementById('galleryInput').addEventListener('change', function (event) {
+            const container = document.getElementById('galleryPreviewContainer');
+            container.innerHTML = ''; 
+
+            const files = event.target.files; 
+
+            if (files && files.length > 0) {
+                Array.from(files).forEach(file => {
+                    if (!file.type.startsWith('image/')) return;
+
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = file.name;
+                        img.title = file.name;
+
+        img.style.width = '190px';       
+        img.style.height = '125px';    
+        img.style.objectFit = 'cover';
+        img.style.borderRadius = '8px';
+        img.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
+        img.style.transition = 'transform 0.2s ease'; 
+
+
+        img.onmouseenter = () => img.style.transform = 'scale(1.04)';
+        img.onmouseleave = () => img.style.transform = 'scale(1)';
+
+                        container.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+</script>
+}

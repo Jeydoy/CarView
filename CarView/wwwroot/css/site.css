@@ -18,13 +18,12 @@ html {
 }
 
 body {
-        margin-bottom: 60px; /* Це стандартний рядок, який там уже був - залиш його */
+        margin-bottom: 60px; 
         position: relative;
         background-color: #212529;
         overflow-x: hidden;
 
 }
-        /* А цей блок встав одразу під body */
     body::before {
         content: "";
         position: fixed;
@@ -34,23 +33,20 @@ body {
         height: 200%;
         background-image: url('/images/logos-pattern.png');
         background-repeat: repeat;
-        background-size: 800px; /* Твій налаштований розмір */
+        background-size: 800px;
         transform: rotate(-15deg);
-        opacity: 0.2; /* Твоя налаштована прозорість */
+        opacity: 0.2; 
         z-index: -1;
         pointer-events: none;
-        /* Додаємо анімацію: назва, тривалість, рівномірно, нескінченно */
         animation: backgroundFlow 40s linear infinite;
     }
 
-/* Створюємо саму анімацію руху */
 @keyframes backgroundFlow {
     0% {
         background-position: 0 0;
     }
 
     100% {
-        /* Зміщуємо фон по діагоналі. Значення має приблизно співпадати з background-size */
         background-position: -800px 800px;
     }
 }

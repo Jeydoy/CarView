@@ -15,7 +15,7 @@
                     <form asp-action="Edit" enctype="multipart/form-data">
                         <div asp-validation-summary="All" class="text-danger mb-3 fw-bold fs-5"></div>
 
-                        <!-- Приховані поля -->
+                    
                         <input type="hidden" asp-for="Id" />
                         <input type="hidden" asp-for="ViewsCount" />
                         <input type="hidden" asp-for="LikesCount" />
@@ -76,14 +76,14 @@
                                 <select asp-for="FuelType" class="form-select bg-dark text-white border-secondary" asp-items="Html.GetEnumSelectList<FuelType>()"></select>
                             </div>
 
-                            <!-- Опис -->
+                           
                             <div class="col-12 mt-4">
                                 <label asp-for="Description" class="form-label text-secondary"></label>
                                 <textarea asp-for="Description" class="form-control bg-dark text-white border-secondary" rows="5"></textarea>
                                 <span asp-validation-for="Description" class="text-danger"></span>
                             </div>
 
-                            <!-- Завантаження нових фотографій -->
+                            
                             <h5 class="text-info mt-4 mb-2">Оновлення фотографій</h5>
                             <hr class="border-secondary mt-0" />
 
@@ -97,7 +97,7 @@
                             </div>
                         </div>
 
-                        <!-- Кнопки збереження - тепер вони ТОЧНО ВСЕРЕДИНІ форми -->
+                        
                         <div class="d-flex justify-content-between mt-5">
                             <a asp-action="Index" class="btn btn-outline-secondary px-4">Скасувати</a>
                             <button type="submit" class="btn btn-info px-5 fw-bold text-dark">Зберегти зміни</button>
@@ -106,7 +106,7 @@
                 </div>
             </div>
 
-            <!-- ГАЛЕРЕЯ ДЛЯ ВИДАЛЕННЯ - винесена за межі головної форми -->
+            <!-- ГАЛЕРЕЯ ДЛЯ ВИДАЛЕННЯ  -->
             <div class="card bg-dark border-secondary shadow-lg mt-4 mb-5">
                 <div class="card-body p-4">
                     @if (Model.MediaFiles != null && Model.MediaFiles.Any())

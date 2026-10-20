@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CarView.Models
 {
-    public class Car
+    public class Car : ITenantEntity    
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "Введіть назву моделі")]
@@ -34,15 +34,16 @@ namespace CarView.Models
         public int ViewsCount { get; set; } = 0;
         public int LikesCount { get; set; } = 0;
         public int BrandId { get; set; }
-        public Brand Brand { get; set; }    
+        public Brand? Brand { get; set; }    
 
         public List<CarMedia> MediaFiles { get; set; } = new List<CarMedia>();
 
         public double? Latitude { get; set; } //широта
         public double? Longitude { get; set; } //довгота
 
-       public string? EngineSoundUrl { get; set; } 
+       public string? EngineSoundUrl { get; set; }
 
-
+        public int? TenantId { get; set; }
+        public Tenant? Tenant { get; set; }
     }
 }

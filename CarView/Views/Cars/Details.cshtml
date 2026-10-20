@@ -1,7 +1,6 @@
 @model CarView.Models.Car
 
 @{
-    // SEO Оптимізація: Динамічно формуємо контент на основі даних авто
     ViewData["Title"] = $"{Model.Brand.Name} {Model.ModelName} - Огляд, фото, ціна";
     
     ViewData["MetaDescription"] = $"Детальний огляд {Model.Brand.Name} {Model.ModelName} {Model.Year} року. Актуальна ціна: ${Model.Price.ToString("N0")}. Перегляньте характеристики, галерею та історію кожного авто на CarView.";
@@ -13,18 +12,14 @@ var mainBannerUrl = Model.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl
                      ?? "/images/placeholder.jpg";
 }
 
-<!-- Важливо для SEO: Головний заголовок сторінки має бути в тезі H1 (лише один на сторінку) -->
 <h1 class="visually-hidden">@Model.Brand.Name @Model.ModelName</h1>
 
 
-<!-- Hero Section (Головний постер від краю до краю) -->
 <div class="position-relative overflow-hidden mb-5 shadow-lg"
      style="background-image: url('@mainBannerUrl'); background-size: cover; background-position: center; height: 55vh; width: 100vw; margin-left: calc(-50vw + 50%);">
 
-    <!-- Затемнення фону для кращого читання тексту -->
     <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(0,0,0,0.6);"></div>
 
-    <!-- Текст поверх постера (тільки назва) -->
     <div class="position-absolute top-50 start-50 translate-middle z-2 w-100 text-center">
         <h1 class="display-3 fw-bold text-info text-opacity-75">@Model.Brand?.Name @Model.ModelName</h1>
     </div>
@@ -34,9 +29,7 @@ var mainBannerUrl = Model.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl
     <div class="row g-4">
         
       
-        <!-- ==================== ЛІВА КОЛОНКА (Навігація + Графіки) ==================== -->
         <div class="col-lg-3 d-none d-lg-block">
-            <!-- sticky-top тримає меню та графіки на екрані при скролі -->
             <div class="sticky-top" style="top: 100px;">
 
                 <h6 class="text-secondary mb-3 text-uppercase fw-bold" style="letter-spacing: 1px;">Меню</h6>
@@ -46,10 +39,10 @@ var mainBannerUrl = Model.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl
                     <a class="nav-link text-light px-3 py-2 border border-secondary" href="#gallery" style="background-color: rgba(255,255,255,0.02);">Галерея</a>
                 </nav>
 
-                <!-- Графіки статистики під меню -->
+
                 <h6 class="text-secondary mb-3 text-uppercase fw-bold" style="letter-spacing: 1px;">Статистика</h6>
 
-                <!-- Лінійний графік -->
+                
                 <div class="card bg-dark border-secondary mb-3 shadow-sm" style="background-color: rgba(255,255,255,0.02) !important;">
                     <div class="card-body p-2">
                         <h6 class="text-center text-info small mb-2">Перегляди</h6>
@@ -57,7 +50,7 @@ var mainBannerUrl = Model.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl
                     </div>
                 </div>
 
-                <!-- Кільцевий графік -->
+               
                 <div class="card bg-dark border-secondary shadow-sm" style="background-color: rgba(255,255,255,0.02) !important;">
                     <div class="card-body p-2">
                         <h6 class="text-center text-info small mb-2">Конверсія дій</h6>
@@ -68,11 +61,10 @@ var mainBannerUrl = Model.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl
             </div>
         </div>
 
-        <!-- ==================== ЦЕНТРАЛЬНА КОЛОНКА (Контент) ==================== -->
+       
         <div class="col-lg-6">
             
-            <!-- Секція Характеристик -->
-            <!-- scroll-margin-top: 100px потрібен, щоб при кліку на навігацію, секція не ховалася під верхньою чорною шапкою сайту -->
+           
             <section id="specs" class="mb-5" style="scroll-margin-top: 100px;">
                 <h2 class="mb-4 text-info border-bottom border-info pb-2">Характеристики</h2>
                 <div class="row g-3 text-center">
@@ -115,7 +107,7 @@ var mainBannerUrl = Model.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl
                 </div>
             </section>
 
-            <!-- Секція Огляду -->
+        
             <section id="overview" class="mb-6" style="scroll-margin-top: 100px;">
                 <h2 class="mb-3 text-info border-bottom border-info pb-2">Огляд моделі</h2>
                 <div class="p-4 border border-secondary rounded" style="background-color: rgba(255,255,255,0.02);">
@@ -125,7 +117,7 @@ var mainBannerUrl = Model.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl
                 </div>
             </section>
 
-            <!-- Секція Галереї -->
+           
             <section id="gallery" class="mb-5" style="scroll-margin-top: 100px;">
                 <h2 class="mb-4 text-info border-bottom border-info pb-2">Галерея</h2>
                <div class="row row-cols-1 row-cols-md-2 g-4">
@@ -134,7 +126,6 @@ var mainBannerUrl = Model.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl
                     {
            @foreach (var media in Model.MediaFiles){
         <div class="col">
-            <!-- Додано w-100, height: 250px та object-fit: cover -->
             <img src="@media.FileUrl" 
                  class="img-fluid rounded shadow-sm w-100" 
                  alt="Фото авто" 
@@ -158,78 +149,123 @@ var mainBannerUrl = Model.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl
 
         </div>
 
-        <!-- ==================== ПРАВА КОЛОНКА (Фіксована панель з ціною) ==================== -->
+       
         <div class="col-lg-3">
             <div class="sticky-top" style="top: 100px;">
-                
-                <div class="card bg-dark border-info shadow-lg text-center mb-3">
+
+               
+                <div class="card bg-dark border-secondary shadow-lg rounded-4 text-center mb-3" style="border-color: #444 !important;">
                     <div class="card-body p-4">
+
+                        <!-- Рік та Ціна -->
                         <div class="mb-2">
-                            <span class="badge bg-secondary text-light mb-2 px-3 py-1 fs-6">Рік: @Model.Year</span>
+                            <span class="badge bg-secondary text-light px-3 py-2 fs-6 rounded-pill">Рік: @Model.Year</span>
                         </div>
-                        <h2 class="text-info fw-bold mb-3">$@Model.Price.ToString("N0")</h2>
-                        
-                        <p class="text-secondary small mb-4">Перевірте актуальні ціни та пропозиції на найбільшому авторинку України.</p>
-                        
-                        <!-- Динамічна кнопка Auto.RIA -->
+                        <h2 class="text-info fw-bolder mb-3">$@Model.Price.ToString("N0")</h2>
+                        <p class="text-secondary small mb-4 px-2">Перевірте актуальні ціни та пропозиції на найбільшому авторинку України.</p>
+
+                        <!-- Головна кнопка (CRM) -->
+                        <button type="button" class="btn btn-info btn-lg w-100 fw-bold text-dark shadow-sm mb-3 rounded-3" data-bs-toggle="modal" data-bs-target="#crmModal">
+                            🤝 Залишити заявку
+                        </button>
+
+                        <!-- Сповіщення CRM -->
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success shadow-sm py-2 px-3 small rounded-3 mb-3">
+                                @TempData["SuccessMessage"]
+                            </div>
+                        }
+
+                        <!-- Кнопка Auto.RIA -->
                         @{
                             var searchQuery = Uri.EscapeDataString($"site:auto.ria.com {Model.Brand?.Name} {Model.ModelName} {Model.Year}");
                         }
-                        <a href="https://www.google.com/search?q=@searchQuery" 
-                           target="_blank" 
-                           class="btn w-100 mb-3 fw-bold text-white shadow-sm d-flex align-items-center justify-content-center gap-2" 
+                        <a href="https://www.google.com/search?q=@searchQuery"
+                           target="_blank"
+                           class="btn w-100 mb-4 fw-bold text-white shadow-sm rounded-3 d-flex align-items-center justify-content-center gap-2"
                            style="background-color: #db5c4c; border: none; transition: opacity 0.2s;"
                            onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
-                           <span class="fs-5">🔍</span> Знайти на Auto.RIA
+                            <span>🔍</span> Знайти на Auto.RIA
                         </a>
 
-                        <!-- КНОПКА ЛАЙКУ -->
-                        @{
-                            var likedCarsDetail = Context.Request.Cookies["LikedCars"]?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>();
-                            bool isLikedDetail = likedCarsDetail.Contains(Model.Id.ToString());
-                        }
-                        <form asp-controller="Cars" asp-action="ToggleLike" asp-route-id="@Model.Id" method="post" class="w-100 mb-2">
-                            <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-                            <button type="submit" class="btn w-100 fw-bold @(isLikedDetail ? "btn-danger" : "btn-outline-danger")">
-                                @(isLikedDetail ? "❤️ В улюблених" : "🤍 Додати в улюблені") (@Model.LikesCount)
-                            </button>
-                        </form>
+                        <!-- Група: Лайк та PDF (в один ряд) -->
+                        <div class="d-flex justify-content-center gap-2 mb-3">
 
-                        <p class="text-secondary small mt-3 mb-0">Переглядів: @Model.ViewsCount 👁</p>
+                            <!-- Форма Лайку -->
+                            @{
+                                var likedCarsDetail = Context.Request.Cookies["LikedCars"]?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>();
+                                bool isLikedDetail = likedCarsDetail.Contains(Model.Id.ToString());
+                            }
+                            <form asp-controller="Cars" asp-action="ToggleLike" asp-route-id="@Model.Id" method="post" class="m-0 flex-grow-1">
+                                <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                {
+                                    <button type="submit" class="btn btn-outline-danger w-100 rounded-3 btn-sm py-2 d-flex align-items-center justify-content-center gap-1">
+                                        ❤️ <span>@Model.LikesCount</span>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-outline-secondary w-100 rounded-3 btn-sm py-2 d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#authModal" title="Увійдіть, щоб поставити лайк">
+                                        🤍 <span>@Model.LikesCount</span>
+                                    </button>
+                                }
+                            </form>
+
+                            <!-- Форма PDF -->
+                            <form asp-action="RequestPdfReport" asp-controller="Cars" method="post" class="m-0 flex-grow-1">
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <button type="submit" class="btn btn-outline-light w-100 rounded-3 btn-sm py-2 d-flex align-items-center justify-content-center gap-1" title="Згенерувати PDF-паспорт (Асинхронно)">
+                                    📄 <span>PDF-паспорт</span>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Сповіщення PDF -->
+                        @if (TempData["Message"] != null)
+                        {
+                            <div class="alert alert-info py-2 px-3 small rounded-3 mb-3">@TempData["Message"]</div>
+                        }
+
+                        <!-- Кнопка Адміна -->
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <hr class="border-secondary my-3 opacity-25">
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-warning w-100 rounded-3 shadow-sm">
+                                ⚙️ Редагувати авто (Адмін)
+                            </a>
+                        }
                     </div>
                 </div>
 
-                <!-- Кнопка повернення -->
-                <a asp-action="Index" class="btn btn-outline-secondary w-100 mb-2">← Повернутися до каталогу</a>
-                
-                <!-- Кнопка адміністратора схована в самому низу панелі -->
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-warning w-100 shadow-sm" title="Режим адміністратора">
-                    ⚙️ Редагувати авто (Адмін)
-                </a>
-
+                <!-- Педаль газу  -->
                 @if (!string.IsNullOrEmpty(Model.EngineSoundUrl))
-{
-    <div class="mt-4 text-center">
-        <!-- Збільшено max-width до 350px для більшого розміру -->
-        <img id="gasPedal" src="/images/pedal.png" alt="Педаль газу" 
-             style="width: 100%; max-width: 350px; border: 2px solid #0dcaf0; border-radius: 12px; box-shadow: 0 0 15px rgba(13, 202, 240, 0.4); cursor: pointer; user-select: none; touch-action: manipulation; transition: all 0.1s ease-out;" />
-        
-        <audio id="engineSound" src="@Model.EngineSoundUrl" preload="auto"></audio>
-    </div>
-}
+                {
+                    <div class="mb-4 text-center">
+                        <img id="gasPedal" src="/images/pedal.png" alt="Педаль газу"
+                             class="img-fluid"
+                             style="max-width: 350px; border: 2px solid #0dcaf0; border-radius: 12px; box-shadow: 0 0 15px rgba(13, 202, 240, 0.4); cursor: pointer; user-select: none; touch-action: manipulation; transition: all 0.1s ease-out;" />
+                        <audio id="engineSound" src="@Model.EngineSoundUrl" preload="auto"></audio>
+                    </div>
+                }
+
+                <!-- Посилання "Повернутися до каталогу" ПІД карткою -->
+                <div class="text-center mt-2">
+                    <a asp-action="Index" class="text-secondary text-decoration-none d-inline-flex align-items-center gap-2 fs-6" style="transition: color 0.3s;" onmouseover="this.className='text-light text-decoration-none d-inline-flex align-items-center gap-2 fs-6'" onmouseout="this.className='text-secondary text-decoration-none d-inline-flex align-items-center gap-2 fs-6'">
+                        &larr; Повернутися до каталогу
+                    </a>
+                </div>
 
             </div>
         </div>
-
-    </div>
-</div>
 
 <!-- Повноекранний Lightbox зі слайдером -->
 <div class="modal fade" id="photoLightbox" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content" style="background-color: rgba(0, 0, 0, 0.95); border: none;">
             
-            <!-- Кнопка закриття (біла) -->
+            <!-- Кнопка закриття  -->
             <div class="modal-header border-0 position-absolute top-0 end-0 z-3">
                 <button type="button" class="btn-close btn-close-white fs-4 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -274,39 +310,30 @@ var mainBannerUrl = Model.MediaFiles?.FirstOrDefault(m => m.IsMain)?.FileUrl
 
  <script>
 function openLightbox(index) {
-    // Отримуємо елемент каруселі
-    var myCarouselElement = document.getElementById('galleryCarousel');
     
-    // Ініціалізуємо карусель через Bootstrap API
+    var myCarouselElement = document.getElementById('galleryCarousel');
     var carousel = bootstrap.Carousel.getInstance(myCarouselElement);
     if (!carousel) {
         carousel = new bootstrap.Carousel(myCarouselElement);
     }
     
-    // Перемикаємо на потрібний слайд
     carousel.to(index);
 }
 </script>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Отримуємо реальні дані з нашої моделі C#
-        const totalViews = @(Model.ViewsCount > 0 ? Model.ViewsCount : 10); // Захист від нулів
+    document.addEventListener("DOMContentLoaded", function () {      
+        const totalViews = @(Model.ViewsCount > 0 ? Model.ViewsCount : 10); 
         const totalLikes = @Model.LikesCount;
 
-        // ---------------------------------------------------------
-        // 1. Графік переглядів за 7 днів (Лінійний / Line Chart)
-        // ---------------------------------------------------------
+     
         const viewsCtx = document.getElementById('viewsChart').getContext('2d');
-
-        // Генеруємо красивий фейковий тренд для демонстрації (щоб графік був живим)
         let trendData = [];
         let current = Math.max(1, Math.floor(totalViews / 10));
         for(let i = 0; i < 7; i++) {
             trendData.push(current);
             current += Math.floor(Math.random() * (totalViews / 5) + 1);
         }
-        // Останній день (сьогодні) - це завжди пік
         trendData[6] = Math.max(...trendData) + 2;
 
         const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
@@ -318,10 +345,10 @@ function openLightbox(index) {
                 datasets: [{
                     label: 'Перегляди',
                     data: trendData,
-                    borderColor: '#0dcaf0', // Колір Info (блакитний)
+                    borderColor: '#0dcaf0', 
                     backgroundColor: 'rgba(13, 202, 240, 0.2)',
                     borderWidth: 2,
-                    tension: 0.4, // Робить лінії плавними та вигнутими
+                    tension: 0.4, 
                     fill: true,
                     pointBackgroundColor: '#0dcaf0'
                 }]
@@ -339,9 +366,7 @@ function openLightbox(index) {
             }
         });
 
-        // ---------------------------------------------------------
-        // 2. Графік конверсії Лайки/Перегляди (Кільцевий / Doughnut)
-        // ---------------------------------------------------------
+      
         const likesCtx = document.getElementById('likesChart').getContext('2d');
         const justViews = Math.max(0, totalViews - totalLikes);
 
@@ -352,8 +377,8 @@ function openLightbox(index) {
                 datasets: [{
                     data: [totalLikes, justViews],
                     backgroundColor: [
-                        '#dc3545', // Червоний (Лайки)
-                        '#6c757d'  // Сірий (Просто перегляди)
+                        '#dc3545', 
+                        '#6c757d'  
                     ],
                     borderWidth: 0,
                     hoverOffset: 4
@@ -361,7 +386,7 @@ function openLightbox(index) {
             },
             options: {
                 responsive: true,
-                cutout: '75%', // Товщина кільця
+                cutout: '75%', 
                 plugins: {
                     legend: {
                         position: 'bottom',
@@ -385,15 +410,15 @@ function openLightbox(index) {
         function pressGas(e) {
             e.preventDefault();
             
-            // Зупиняємо процес затухання, якщо натиснули знову до його закінчення
+
             clearInterval(fadeInterval);
             
-            // Відтворюємо завжди з початку на максимальній гучності
+
             engine.currentTime = 0; 
             engine.volume = 1.0; 
             engine.play();
             
-            // Ефект натискання (вдавлюється і світіння стає яскравішим)
+
             pedal.style.transform = "scale(0.95) translateY(10px)";
             pedal.style.boxShadow = "0 0 25px rgba(13, 202, 240, 0.8)";
         }
@@ -401,20 +426,20 @@ function openLightbox(index) {
         function releaseGas(e) {
             e.preventDefault();
             
-            // Повертаємо педаль у вихідний стан
+
             pedal.style.transform = "scale(1) translateY(0px)";
             pedal.style.boxShadow = "0 0 15px rgba(13, 202, 240, 0.4)";
             
-            // Плавне затухання звуку
+
             clearInterval(fadeInterval);
             fadeInterval = setInterval(() => {
                 if (engine.volume > 0.05) {
-                    engine.volume = Math.max(0, engine.volume - 0.05); // Зменшуємо гучність
+                    engine.volume = Math.max(0, engine.volume - 0.05); 
                 } else {
-                    engine.pause(); // Ставимо на паузу, коли звук майже зник
+                    engine.pause(); 
                     clearInterval(fadeInterval);
                 }
-            }, 40); // 40 мілісекунд - швидкість затухання (можна змінити для довшого ефекту)
+            }, 40); 
         }
 
         pedal.addEventListener('mousedown', pressGas);
@@ -425,3 +450,37 @@ function openLightbox(index) {
         pedal.addEventListener('touchend', releaseGas);
     });
 </script>
+
+<!-- Модальне вікно форми -->
+<div class="modal fade" id="crmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-info">Заявка на @Model.Brand.Name @Model.ModelName</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-controller="Cars" asp-action="SendToCrm" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="carId" value="@Model.Id" />
+                    <input type="hidden" name="carName" value="@Model.Brand.Name @Model.ModelName" />
+
+                    <div class="mb-3">
+                        <label class="form-label text-white-50">Ваше ім'я</label>
+                        <input type="text" name="customerName" class="form-control bg-secondary text-white border-0" required placeholder="Наприклад: Олексій" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white-50">Номер телефону</label>
+                        <input type="tel" name="customerPhone" class="form-control bg-secondary text-white border-0" required placeholder="+38 (099) 000-00-00" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white-50">Email адреса</label>
+                        <input type="email" name="customerEmail" class="form-control bg-secondary text-white border-0" required placeholder="email@example.com" />
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-info w-100 fw-bold">Відправити в HubSpot CRM</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
