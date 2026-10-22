@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using CarView.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using CarView.Models;
 
 namespace CarView.Controllers
 {
@@ -24,6 +25,15 @@ namespace CarView.Controllers
             var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return Challenge(properties, provider);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Login(string returnUrl = null)
+        {
+            var redirectUrl = Url.Action("ExternalLoginCallback", "Accounts", new { ReturnUrl = returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            return Challenge(properties, "Google");
         }
 
         public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
@@ -67,6 +77,7 @@ namespace CarView.Controllers
             return LocalRedirect(returnUrl);
         }
 
+        [HttpGet]
         [HttpPost]
         public async Task<IActionResult> Logout()
         {

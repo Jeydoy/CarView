@@ -35,6 +35,11 @@ builder.Services.AddSingleton<LuceneSearchService>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddScoped<IBlobStorageService, CloudinaryBlobService>();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+});
+
 builder.Services.AddMemoryCache();
 
 

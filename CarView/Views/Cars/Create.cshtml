@@ -8,6 +8,36 @@
 <h4>Car</h4>
 <hr />
 
+<style>
+.draggable-item {
+    cursor: grab;
+    width: 190px;
+    height: 125px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 2px solid #444;
+    background-color: #212529;
+    user-select: none;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.draggable-item:hover:not(.dragging) {
+    transform: scale(1.04);
+}
+.draggable-item:active {
+    cursor: grabbing;
+}
+.draggable-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+.draggable-item.dragging {
+    opacity: 0.3;
+    border: 2px dashed #0dcaf0;
+}
+</style>
+
 <div class="row">
     <div class="col-md-6">
         <form asp-action="Create" method="post" enctype="multipart/form-data">
@@ -116,8 +146,8 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
+        // 1. SELECT2 ДЛЯ БРЕНДІВ
         jQuery(document).ready(function ($) {
-
             $('#brandSelect').select2({
                 placeholder: '-- Почніть вводити назву... --',
                 minimumInputLength: 3,
@@ -127,71 +157,119 @@
                     dataType: 'json',
                     delay: 300,
                     data: function (params) {
-                        return {
-                            term: params.term
-                        };
+                        return { term: params.term };
                     },
                     processResults: function (data) {
-                        return {
-                            results: data
-                        };
+                        return { results: data };
                     },
                     cache: true
                 }
             });
         });
-    </script>
 
-    <script>
-
-        document.getElementById('posterInput').addEventListener('change', function(event) {
-            const file = event.target.files[0]; 
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById('posterPreview');
-                    preview.src = e.target.result; 
-                    preview.style.display = 'block'; 
-                };
-                reader.readAsDataURL(file);
-            }
-
-        });
-        document.getElementById('galleryInput').addEventListener('change', function (event) {
-            const container = document.getElementById('galleryPreviewContainer');
-            container.innerHTML = ''; 
-
-            const files = event.target.files; 
-
-            if (files && files.length > 0) {
-                Array.from(files).forEach(file => {
-                    if (!file.type.startsWith('image/')) return;
-
+        // 2. ПРЕВ'Ю ГОЛОВНОГО ФОТО (ПОСТЕРА)
+        const posterInput = document.getElementById('posterInput');
+        if (posterInput) {
+            posterInput.addEventListener('change', function(event) {
+                const file = event.target.files[0]; 
+                if (file) {
                     const reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.alt = file.name;
-                        img.title = file.name;
-
-        img.style.width = '190px';       
-        img.style.height = '125px';    
-        img.style.objectFit = 'cover';
-        img.style.borderRadius = '8px';
-        img.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
-        img.style.transition = 'transform 0.2s ease'; 
-
-
-        img.onmouseenter = () => img.style.transform = 'scale(1.04)';
-        img.onmouseleave = () => img.style.transform = 'scale(1)';
-
-                        container.appendChild(img);
+                    reader.onload = function(e) {
+                        const preview = document.getElementById('posterPreview');
+                        if (preview) {
+                            preview.src = e.target.result; 
+                            preview.style.display = 'block'; 
+                        }
                     };
                     reader.readAsDataURL(file);
-                });
-            }
+                }
+            });
+        }
+
+
+       //  DRAG-N-DROP ДЛЯ ГАЛЕРЕЇ
+const fileInput = document.getElementById('galleryInput');
+const container = document.getElementById('galleryPreviewContainer');
+let selectedFiles = [];
+let draggedEl = null;
+
+if (fileInput && container) {
+
+    fileInput.addEventListener('change', function (e) {
+        container.querySelectorAll('img').forEach(img => URL.revokeObjectURL(img.src));
+
+        selectedFiles = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+        renderPreviews();
+    });
+
+    function renderPreviews() {
+        container.innerHTML = '';
+
+        selectedFiles.forEach((file, index) => {
+            const div = document.createElement('div');
+            div.className = 'draggable-item';
+            div.draggable = true;
+            div.dataset.index = index;
+
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.alt = file.name;
+            img.title = file.name;
+
+            div.appendChild(img);
+            container.appendChild(div);
         });
-</script>
+    }
+
+    container.addEventListener('dragstart', (e) => {
+        const item = e.target.closest('.draggable-item');
+        if (!item) return;
+        draggedEl = item;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', item.dataset.index); 
+        setTimeout(() => item.classList.add('dragging'), 0);
+    });
+
+    container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        if (!draggedEl) return;
+
+        const target = e.target.closest('.draggable-item');
+        if (!target || target === draggedEl) return;
+
+        const box = target.getBoundingClientRect();
+        const isAfter = e.clientX > box.left + box.width / 2;
+
+        if (isAfter) {
+            container.insertBefore(draggedEl, target.nextSibling);
+        } else {
+            container.insertBefore(draggedEl, target);
+        }
+    });
+
+    container.addEventListener('drop', (e) => e.preventDefault());
+
+    container.addEventListener('dragend', () => {
+        if (!draggedEl) return;
+        draggedEl.classList.remove('dragging');
+        draggedEl = null;
+        updateFileInputOrder();
+    });
+
+    function updateFileInputOrder() {
+        const newOrder = [...container.querySelectorAll('.draggable-item')]
+            .map(el => selectedFiles[parseInt(el.dataset.index)]);
+
+        selectedFiles = newOrder;
+
+        const dt = new DataTransfer();
+        selectedFiles.forEach(f => dt.items.add(f));
+        fileInput.files = dt.files;
+
+        container.querySelectorAll('.draggable-item').forEach((el, i) => {
+            el.dataset.index = i;
+        });
+    }
+}
+    </script>
 }

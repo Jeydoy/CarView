@@ -240,20 +240,49 @@
     </div>
 </div>
 
+
 <script>
     async function likeCar(carId, btnElement) {
-        const response = await fetch(`/Cars/LikeCar/${carId}`, {
-            method: 'POST',
-            headers: {
-                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-            }
-        });
+        try {
+            const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+            const response = await fetch(`/Cars/LikeCar/${carId}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': tokenInput ? tokenInput.value : ''
+                }
+            });
 
-        if (response.ok) {
+            
+            if (response.status === 401 || !response.ok) {
+                const loginModalElem = document.getElementById('loginModal');
+                if (loginModalElem) {
+                    const modal = new bootstrap.Modal(loginModalElem);
+                    modal.show();
+                }
+                return;
+            }
+
             const data = await response.json();
-            btnElement.querySelector('.likes-count').textContent = data.newLikes;
-            btnElement.classList.remove('btn-outline-danger');
-            btnElement.classList.add('btn-danger');
+         
+            const countElem = btnElement.querySelector('.likes-count');
+            if (countElem) {
+                countElem.textContent = data.newLikes;
+            }
+
+            if (data.isLiked) {
+                btnElement.classList.remove('btn-outline-danger');
+                btnElement.classList.add('btn-danger');
+            } else {
+                btnElement.classList.remove('btn-danger');
+                btnElement.classList.add('btn-outline-danger');
+            }
+        } catch (error) {
+            
+            const loginModalElem = document.getElementById('loginModal');
+            if (loginModalElem) {
+                const modal = new bootstrap.Modal(loginModalElem);
+                modal.show();
+            }
         }
     }
 </script>

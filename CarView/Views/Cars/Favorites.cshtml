@@ -27,17 +27,27 @@
             {
                 <div class="card bg-dark border-secondary mb-4 shadow-sm position-relative" style="transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 15px rgba(0,0,0,0.5)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                     
-                    <!-- КНОПКА ЛАЙКУ -->
-                    @{
-                        var likedCars = ViewBag.LikedCars as List<string> ?? new List<string>();
-                        bool isLiked = likedCars.Contains(car.Id.ToString());
-                    }
-                    <form asp-action="ToggleLike" asp-route-id="@car.Id" method="post" class="position-absolute" style="top: 75px; right: 20px; z-index: 10;">
-                        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-                        <button type="submit" class="btn btn-dark rounded-circle shadow-lg border border-secondary p-2 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: rgba(33,37,41,0.85);" title="Видалити з улюблених">
-                            <span class="fs-4" style="line-height: 1;">@(isLiked ? "❤️" : "🤍")</span>
-                        </button>
-                    </form>
+                 <!-- КНОПКА ЛАЙКУ -->
+@{
+    var likedCars = ViewBag.LikedCars as List<string> ?? new List<string>();
+    bool isLiked = likedCars.Contains(car.Id.ToString());
+}
+
+@if (User?.Identity?.IsAuthenticated == true)
+{
+    <form asp-action="ToggleLike" asp-route-id="@car.Id" method="post" class="position-absolute" style="top: 75px; right: 20px; z-index: 10;">
+        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+        <button type="submit" class="btn btn-dark rounded-circle shadow-lg border border-secondary p-2 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: rgba(33,37,41,0.85);" title="Видалити з улюблених">
+            <span class="fs-4" style="line-height: 1;">@(isLiked ? "❤️" : "🤍")</span>
+        </button>
+    </form>
+}
+else
+{
+    <button type="button" class="btn btn-dark rounded-circle shadow-lg border border-secondary p-2 d-flex align-items-center justify-content-center position-absolute" style="top: 75px; right: 20px; z-index: 10; width: 45px; height: 45px; background-color: rgba(33,37,41,0.85);" data-bs-toggle="modal" data-bs-target="#loginModal">
+        <span class="fs-4" style="line-height: 1;">@(isLiked ? "❤️" : "🤍")</span>
+    </button>
+}
 
                     <!-- Тіло картки -->
                     <a asp-action="Details" asp-route-id="@car.Id" class="text-decoration-none text-white d-block">

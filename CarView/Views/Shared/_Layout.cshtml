@@ -43,15 +43,40 @@ scroll-behavior: smooth;
     <header>
        <nav class="navbar navbar-dark bg-dark border-bottom border-info sticky-top">
     <div class="container-fluid">
-        <button class="btn btn-dark border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+      <button class="btn btn-dark border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
         
+        <!-- Логотип по центру -->
         <a class="navbar-brand mx-auto text-info fw-bold fs-4" asp-controller="Home" asp-action="Index">CarView</a>
         
-        <a asp-controller="Cars" asp-action="Favorites" class="btn btn-dark border-0 fs-5 text-danger" style="width: 56px;" title="Лайкані авто">
-            ❤️
-        </a>
+        <!-- Блок кнопок справа  -->
+<div class="d-flex align-items-center position-relative z-3">
+    
+    <!-- Сердечко -->
+    <a asp-area="" asp-controller="Cars" asp-action="Favorites" class="btn btn-dark rounded-circle border-secondary d-flex align-items-center justify-content-center me-3 shadow-sm" style="width: 42px; height: 42px; background-color: rgba(30, 30, 30, 0.8); transition: all 0.2s;" onmouseover="this.style.backgroundColor='rgba(50, 50, 50, 0.9)'; this.style.boxShadow='0 0 10px rgba(220, 53, 69, 0.5)';" onmouseout="this.style.backgroundColor='rgba(30, 30, 30, 0.8)'; this.style.boxShadow='none';" title="Обране">
+        <span style="font-size: 1.2rem; line-height: 1;">❤️</span> 
+    </a>
+
+    @if (User?.Identity?.IsAuthenticated == true)
+    {
+        <!-- Вихід (через AccountsController) -->
+        <form class="m-0" asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-secondary">
+                <i class="bi bi-box-arrow-right"></i> Вихід
+            </button>
+        </form>
+    }
+    else
+    {
+        <!-- Вхід (через AccountsController) -->
+      
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            Увійти
+                        </button>
+    }
+</div>
     </div>
 </nav>
 
@@ -134,26 +159,28 @@ scroll-behavior: smooth;
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
-            <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+           
+        </div>
+    </div>
+            <!-- Модальне вікно авторизації -->
+            <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content bg-dark text-white border-secondary">
+                    <div class="modal-content bg-dark text-white" style="border: 1px solid #444;">
                         <div class="modal-header border-secondary">
-                            <h5 class="modal-title" id="authModalLabel">Авторизація в CarView</h5>
+                            <h5 class="modal-title fw-bold" id="loginModalLabel">Авторизація в CarView</h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-center py-4">
-                            <p class="text-light mb-4">Увійдіть через обліковий запис Google, щоб ставити лайки та отримати доступ до кабінету.</p>
+                            <p class="mb-4">Увійдіть через обліковий запис Google, щоб ставити лайки </p>
 
                             <form asp-controller="Account" asp-action="ExternalLogin" method="post">
-                                <button type="submit" class="btn btn-light btn-lg px-4 shadow d-inline-flex align-items-center gap-2">
-                                    <svg width="20" height="20" viewBox="0 0 24 24">
-                                        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.15z" />
-                                        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.36 7.31 24 12 24z" />
-                                        <path fill="#FBBC05" d="M5.28 14.27a7.11 7.11 0 0 1 0-4.54V6.58H1.26a11.96 11.96 0 0 0 0 10.84l4.02-3.15z" />
-                                        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z" />
-                                    </svg>
-                                    <strong>Продовжити з Google</strong>
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="provider" value="Google" />
+                                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+
+                                <button type="submit" class="btn btn-light fw-bold px-4 py-2 rounded">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="20" class="me-2">
+                                    Продовжити з Google
                                 </button>
                             </form>
                         </div>
