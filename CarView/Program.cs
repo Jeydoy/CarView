@@ -28,7 +28,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
  .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
-//builder.Services.AddHostedService<PdfGeneratorWorker>();
+builder.Services.AddHostedService<PdfGeneratorWorker>();
 
 builder.Services.AddSingleton<LuceneSearchService>();
 

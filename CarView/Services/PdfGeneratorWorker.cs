@@ -25,11 +25,14 @@ public class PdfGeneratorWorker : BackgroundService
         _scopeFactory = scopeFactory;
         QuestPDF.Settings.License = LicenseType.Community;
 
-        string fontPath = @"C:\Windows\Fonts\arial.ttf";
-        if (File.Exists(fontPath))
-        {
-            FontManager.RegisterFont(File.OpenRead(fontPath));
-        }
+        string fontsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Fonts");
+
+        string regularFont = Path.Combine(fontsFolder, "ARIAL.TTF");
+        string boldFont = Path.Combine(fontsFolder, "ARIALBD.TTF");
+
+        if (File.Exists(regularFont)) FontManager.RegisterFont(File.OpenRead(regularFont));
+        if (File.Exists(boldFont)) FontManager.RegisterFont(File.OpenRead(boldFont));
+
 
         string rabbitHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost";
 

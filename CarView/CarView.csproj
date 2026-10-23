@@ -38,4 +38,10 @@
     <None Include=".github\workflows\deploy.yml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Services\Fonts\ARIAL.TTF">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
